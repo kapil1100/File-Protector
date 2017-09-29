@@ -157,7 +157,7 @@ public class start {
                 } else
                     changeIt(currentFilePath, "");
             }
-            
+
             // the old locations and the new locations
             // will be stored in "thefile"
             File thefile = new File(rootFolderLoc + "\\jse34hdk34hj23lo45kaei89jc");
@@ -218,9 +218,10 @@ public class start {
             //generating a random name for the file.
             String rndmFileName = new SessionIdentifierGenerator().nextSessionId();
 
-            File newFilePath = new File(rootFolderLoc + "\\" + rndmFileName);
+            File newFilePath = new File(oldFilePath.getParent() + "\\" + rndmFileName);
             String oldFileName=new String(innerDirectories + oldFilePath.getName());
-            FileNameList n = new FileNameList(oldFileName, rndmFileName);
+            String newFileName=new String(innerDirectories + rndmFileName);
+            FileNameList n = new FileNameList(oldFileName, newFileName);
             locList.add(n);
 
             oldFilePath.renameTo(newFilePath);
