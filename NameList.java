@@ -2,19 +2,19 @@ import java.io.File;
 
 public class NameList {
 
-	private File mOldFile,mNewFile;
+    private File mOldFilePath, mNewFilePath;
 
-	public NameList(File oldFile, File newFile) {
-		mOldFile = oldFile;
-		mNewFile = newFile;
-	}
+    public NameList(File oldFilePath, File newFilePath) {
+        mOldFilePath = oldFilePath;
+        mNewFilePath = newFilePath;
+    }
 
-	public File getOldFile() {
-		return mOldFile;
-	}
+    public File getOldFilePath() {
+        return mOldFilePath;
+    }
 
-	public File getNewFile() {
-		return mNewFile;
-	}
+    public File getNewFilePath() {
+        return mNewFilePath;
+    }
 
 }
