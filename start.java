@@ -16,8 +16,8 @@ public class start {
     private JMenuBar menuBar;
     private JMenu fileMenu;
     private JMenuItem creator, restore, exitItem, developer;
-    private File rootFolder;
-    private ArrayList<NameList> locList = new ArrayList<NameList>();
+    private File rootFolderLoc;
+    private ArrayList<FileNameList> locList = new ArrayList<FileNameList>();
     private boolean hasPassword = false;
     private String Password, message, introText;
     private String[] tokens;
@@ -98,7 +98,7 @@ public class start {
                 "\n        4. Add password." +
                 "\n        5. Done!" +
                 "\n" +
-                "\nII. DECRYPT : Use deCrypt button to restore the rootFolder or a folder." +
+                "\nII. DECRYPT : Use deCrypt button to restore the rootFolderLoc or a folder." +
                 "\n        1. Click on deCrypt button." +
                 "\n        2. Select the encrypted folder." +
                 "\n             (NOTE: Only encrypted folders can be decrypted.)" +
@@ -122,15 +122,15 @@ public class start {
             if (reply != JFileChooser.OPEN_DIALOG)
                 return;
 
-            //saving location of the folder selected by the user in the variable 'rootFolder'.
-            rootFolder = choose.getSelectedFile();
+            //saving location of the folder selected by the user in the variable 'rootFolderLoc'.
+            rootFolderLoc = choose.getSelectedFile();
 
-            //storing names of all the files in the rootFolder in 'fileNames'.
-            String[] fileNames = rootFolder.list();
+            //storing names of all the files in the rootFolderLoc in 'fileNames'.
+            String[] fileNames = rootFolderLoc.list();
 
             // check whether the folder is already encrypted or not
             for (String fileName : fileNames) {
-                //rootFolder named 'jse34hdk34hj23lo45kaei89jc' must be present in the directory if the folder is encrypted.
+                //file named 'jse34hdk34hj23lo45kaei89jc' must be present in the directory if the folder is encrypted.
                 if (fileName.equals("jse34hdk34hj23lo45kaei89jc")) {
                     JOptionPane.showMessageDialog(frame,
                             "The folder is already encrypted!!");
@@ -144,24 +144,23 @@ public class start {
                             + "\nYou might not be able to restore it!",
                     "Warning!", JOptionPane.YES_NO_OPTION);
 
-            // if user not clicked the yes button
-            // then, terminate the encryption process
+            // if user not clicked the yes button, then terminate the encryption process
             if (reply != JOptionPane.YES_OPTION)
                 return;
 
             for (String fileName : fileNames) {
-                File currentFile = new File(rootFolder + "\\" + fileName);
-                if (currentFile.isDirectory()) {
-                    // if the currentFile rootFolder is a folder then process it further
+                File currentFilePath = new File(rootFolderLoc + "\\" + fileName);
+                if (currentFilePath.isDirectory()) {
+                    // if the currentFilePath rootFolderLoc is a folder then process it further
                     // to change all the files inside the folder
-                    processIt(currentFile);
+                    processIt(currentFilePath, "");
                 } else
-                    changeIt(currentFile, rootFolder);
+                    changeIt(currentFilePath, "");
             }
 
             // the old locations and the new locations
             // will be stored in "thefile"
-            File thefile = new File(rootFolder + "\\jse34hdk34hj23lo45kaei89jc");
+            File thefile = new File(rootFolderLoc + "\\jse34hdk34hj23lo45kaei89jc");
 
             reply = JOptionPane.showConfirmDialog(frame, "Do you want to add Password?", "Password Protection",
                     JOptionPane.YES_NO_OPTION);
@@ -206,9 +205,9 @@ public class start {
                 } while (temp);
             }
 
-            for (NameList fileName : locList) {
-                writer.write(fileName.getOldFilePath() + "/");
-                writer.write(fileName.getNewFilePath() + "/");
+            for (FileNameList fileName : locList) {
+                writer.write(fileName.getOldFileName() + "/");
+                writer.write(fileName.getNewFileName() + "/");
             }
             writer.close();
         } catch (Exception e) {
@@ -216,26 +215,28 @@ public class start {
         }
     }
 
-    private void changeIt(File oldFilePath, File rootLoc) {
+    private void changeIt(File oldFilePath, String innerDirectories) {
         //generating a random name for the file.
         String rndmFileName = new SessionIdentifierGenerator().nextSessionId();
 
-        File newFilePath = new File(rootLoc + "\\" + rndmFileName);
-        NameList n = new NameList(oldFilePath, newFilePath);
+        File newFilePath = new File(rootFolderLoc + "\\" + rndmFileName);
+        String oldFileName=new String(innerDirectories + oldFilePath.getName());
+        FileNameList n = new FileNameList(oldFileName, rndmFileName);
         locList.add(n);
 
         oldFilePath.renameTo(newFilePath);
     }
 
     // read and alter the further files in the inner folder
-    private void processIt(File folderPath) {
+    private void processIt(File folderPath, String innerDirectories) {
         String[] fileNames = folderPath.list();
+        innerDirectories += folderPath.getName() + "\\";
         for (String fileName : fileNames) {
             File currentFilePath = new File(folderPath + "\\" + fileName);
             if (currentFilePath.isFile())
-                changeIt(currentFilePath, folderPath);
+                changeIt(currentFilePath, innerDirectories);
             else if (currentFilePath.isDirectory())
-                processIt(currentFilePath);
+                processIt(currentFilePath, innerDirectories);
         }
     }
 
@@ -252,14 +253,14 @@ public class start {
         public void actionPerformed(ActionEvent e) {
             JFileChooser choose = new JFileChooser();
             choose.setCurrentDirectory(new File("C:/"));
-            choose.setDialogTitle("Select directory to de-crypt:");
+            choose.setDialogTitle("Select directory to restore:");
             choose.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             choose.setAcceptAllFileFilterUsed(false);
             choose.showOpenDialog(frame);
 
-            rootFolder = choose.getSelectedFile();
+            rootFolderLoc = choose.getSelectedFile();
 
-            String[] fileNames = rootFolder.list();
+            String[] fileNames = rootFolderLoc.list();
             boolean isEncrypted = false;
 
             // check whether the folder is encrypted or not
@@ -282,9 +283,9 @@ public class start {
                 if (reply != JOptionPane.YES_OPTION)
                     return;
 
-                locList = new ArrayList<NameList>();
+                locList = new ArrayList<FileNameList>();
 
-                File theFile = new File(rootFolder + "\\" + "jse34hdk34hj23lo45kaei89jc");
+                File theFile = new File(rootFolderLoc + "\\" + "jse34hdk34hj23lo45kaei89jc");
 
                 try {
                     BufferedReader reader = new BufferedReader(new FileReader(theFile));
@@ -297,7 +298,7 @@ public class start {
                         message = "Enter Password:";
                         getPass();
                     } else
-                        // if the rootFolder is not password protected
+                        // if the rootFolderLoc is not password protected
                         setUpNameList(0);
 
                     reader.close();
@@ -305,7 +306,6 @@ public class start {
                 } catch (Exception e1) {
                     e1.printStackTrace();
                 }
-
             }
 
             // if the folder is not encrypted
@@ -314,17 +314,9 @@ public class start {
                 return;
             }
 
-            //NOTE: If the folder is moved, then also it can be restored by the following implementation.
-            for (String fileName : fileNames) {
-                File filePath = new File(rootFolder + "\\" + fileName);
-                if (filePath.isDirectory())
-                    restoreProcessing(filePath);
-                else {
-                    restoreChange(filePath);
-                }
-            }
+            restore();
 
-            JOptionPane.showMessageDialog(frame, "Selected folder restored successfully..");
+            JOptionPane.showMessageDialog(frame, "Restoration successfull.");
         }
     }
 
@@ -349,7 +341,7 @@ public class start {
 
     private void setUpNameList(int i) {
         for (; i < tokens.length; i += 2)
-            locList.add(new NameList(new File(tokens[i]), new File(tokens[i + 1])));
+            locList.add(new FileNameList(new String(tokens[i]), new String(tokens[i + 1])));
     }
 
     public boolean checkPass(String pass) {
@@ -359,27 +351,13 @@ public class start {
             return false;
     }
 
-    public void restoreProcessing(File folderPath) {
-        String[] fileNames = folderPath.list();
-        for (String fileName : fileNames) {
-            File currentFilePath = new File(folderPath + "\\" + fileName);
-            if (currentFilePath.isDirectory())
-                restoreProcessing(currentFilePath);
-            else
-                restoreChange(currentFilePath);
+    public void restore() {
+        for(int i=0; i<locList.size(); i++){
+            File newFilePath=new File(rootFolderLoc + "\\" + locList.get(i).getNewFileName());
+            File oldFilePath=new File(rootFolderLoc + "\\" + locList.get(i).getOldFileName());
+
+            newFilePath.renameTo(oldFilePath);
         }
-    }
-
-    public void restoreChange(File currentFilePath) {
-
-        for (NameList fileName : locList) {
-            if (fileName.getNewFilePath().equals(currentFilePath)) {
-                currentFilePath.renameTo(fileName.getOldFilePath());
-                locList.remove(fileName);
-                break;
-            }
-        }
-
     }
 
     public class developerListener implements ActionListener {
@@ -398,5 +376,4 @@ public class start {
                 return;
         }
     }
-
 }
