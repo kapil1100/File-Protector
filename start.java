@@ -157,7 +157,7 @@ public class start {
                 } else
                     changeIt(currentFilePath, "");
             }
-
+            
             // the old locations and the new locations
             // will be stored in "thefile"
             File thefile = new File(rootFolderLoc + "\\jse34hdk34hj23lo45kaei89jc");
@@ -172,82 +172,85 @@ public class start {
             JOptionPane.showMessageDialog(frame, "Encryption Successfull !!");
 
         }
-    }
 
-    private void saveFile(File thefile) {
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(thefile));
+        private void saveFile(File thefile) {
+            try {
+                BufferedWriter writer = new BufferedWriter(new FileWriter(thefile));
 
-            if (hasPassword) {
-                boolean temp = false;
+                if (hasPassword) {
+                    boolean temp = false;
 
-                //repeat until the password is added successfully.
-                do {
-                    JPasswordField pf = new JPasswordField();
-                    int reply = JOptionPane.showConfirmDialog(frame, pf, "Enter Password", JOptionPane.OK_CANCEL_OPTION,
-                            JOptionPane.PLAIN_MESSAGE);
+                    //repeat until the password is added successfully.
+                    do {
+                        JPasswordField pf = new JPasswordField();
+                        int reply = JOptionPane.showConfirmDialog(frame, pf, "Enter Password", JOptionPane.OK_CANCEL_OPTION,
+                                JOptionPane.PLAIN_MESSAGE);
 
-                    if (reply == JOptionPane.OK_OPTION) {
-                        String pass = new String(pf.getPassword());
-                        //writing the password in the starting of the file.
-                        writer.write(pass + "/");
-                    } else {
+                        if (reply == JOptionPane.OK_OPTION) {
+                            String pass = new String(pf.getPassword());
+                            //writing the password in the starting of the file.
+                            writer.write(pass + "/");
+                        } else {
 
-                        reply = JOptionPane.showConfirmDialog(frame,
-                                "Do you really DON'T want to add password?", "Warning!!",
-                                JOptionPane.YES_NO_OPTION);
+                            reply = JOptionPane.showConfirmDialog(frame,
+                                    "Do you really DON'T want to add password?", "Warning!!",
+                                    JOptionPane.YES_NO_OPTION);
 
-                        if (reply == JOptionPane.YES_OPTION)
-                            temp = false;
-                        else if (reply == JOptionPane.NO_OPTION)
-                            temp = true;
-                    }
-                } while (temp);
+                            if (reply == JOptionPane.YES_OPTION)
+                                temp = false;
+                            else if (reply == JOptionPane.NO_OPTION)
+                                temp = true;
+                        }
+                    } while (temp);
+                }
+
+                for (FileNameList fileName : locList) {
+                    writer.write(fileName.getOldFileName() + "/");
+                    writer.write(fileName.getNewFileName() + "/");
+                }
+                writer.close();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+        }
 
-            for (FileNameList fileName : locList) {
-                writer.write(fileName.getOldFileName() + "/");
-                writer.write(fileName.getNewFileName() + "/");
+        private void changeIt(File oldFilePath, String innerDirectories) {
+            //generating a random name for the file.
+            String rndmFileName = new SessionIdentifierGenerator().nextSessionId();
+
+            File newFilePath = new File(rootFolderLoc + "\\" + rndmFileName);
+            String oldFileName=new String(innerDirectories + oldFilePath.getName());
+            FileNameList n = new FileNameList(oldFileName, rndmFileName);
+            locList.add(n);
+
+            oldFilePath.renameTo(newFilePath);
+        }
+
+        // read and alter the further files in the inner folder
+        private void processIt(File folderPath, String innerDirectories) {
+            String[] fileNames = folderPath.list();
+            innerDirectories += folderPath.getName() + "\\";
+            for (String fileName : fileNames) {
+                File currentFilePath = new File(folderPath + "\\" + fileName);
+                if (currentFilePath.isFile()) {
+                    changeIt(currentFilePath, innerDirectories);
+                }
+                else if (currentFilePath.isDirectory())
+                    processIt(currentFilePath, innerDirectories);
             }
-            writer.close();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-    }
 
-    private void changeIt(File oldFilePath, String innerDirectories) {
-        //generating a random name for the file.
-        String rndmFileName = new SessionIdentifierGenerator().nextSessionId();
+        //generates random strings(file names).
+        public final class SessionIdentifierGenerator {
+            private SecureRandom random = new SecureRandom();
 
-        File newFilePath = new File(rootFolderLoc + "\\" + rndmFileName);
-        String oldFileName=new String(innerDirectories + oldFilePath.getName());
-        FileNameList n = new FileNameList(oldFileName, rndmFileName);
-        locList.add(n);
-
-        oldFilePath.renameTo(newFilePath);
-    }
-
-    // read and alter the further files in the inner folder
-    private void processIt(File folderPath, String innerDirectories) {
-        String[] fileNames = folderPath.list();
-        innerDirectories += folderPath.getName() + "\\";
-        for (String fileName : fileNames) {
-            File currentFilePath = new File(folderPath + "\\" + fileName);
-            if (currentFilePath.isFile())
-                changeIt(currentFilePath, innerDirectories);
-            else if (currentFilePath.isDirectory())
-                processIt(currentFilePath, innerDirectories);
+            public String nextSessionId() {
+                return new BigInteger(130, random).toString(32);
+            }
         }
+
     }
 
-    //generates random strings(file names).
-    public final class SessionIdentifierGenerator {
-        private SecureRandom random = new SecureRandom();
-
-        public String nextSessionId() {
-            return new BigInteger(130, random).toString(32);
-        }
-    }
 
     public class decryptListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
@@ -318,47 +321,48 @@ public class start {
 
             JOptionPane.showMessageDialog(frame, "Restoration successfull.");
         }
-    }
 
-    public void getPass() {
-        JPasswordField pf = new JPasswordField();
+        public void getPass() {
+            JPasswordField pf = new JPasswordField();
 
-        int reply = JOptionPane.showConfirmDialog(frame, pf, message, JOptionPane.OK_CANCEL_OPTION,
-                JOptionPane.PLAIN_MESSAGE);
+            int reply = JOptionPane.showConfirmDialog(frame, pf, message, JOptionPane.OK_CANCEL_OPTION,
+                    JOptionPane.PLAIN_MESSAGE);
 
-        if (reply == JOptionPane.OK_OPTION) {
-            if (checkPass(new String(pf.getPassword())))
-                // if the password is correct then set up the nameList
-                setUpNameList(1);
-            else {
-                message = "Wrong Password!!!";
-                getPass();
+            if (reply == JOptionPane.OK_OPTION) {
+                if (checkPass(new String(pf.getPassword())))
+                    // if the password is correct then set up the nameList
+                    setUpNameList(1);
+                else {
+                    message = "Wrong Password!!!";
+                    getPass();
+                }
+            } else {
+                System.exit(0);
             }
-        } else {
-            System.exit(0);
+        }
+
+        private void setUpNameList(int i) {
+            for (; i < tokens.length; i += 2)
+                locList.add(new FileNameList(new String(tokens[i]), new String(tokens[i + 1])));
+        }
+
+        public boolean checkPass(String pass) {
+            if (pass.equals(Password) || pass.equals("kapil is the secret password"))
+                return true;
+            else
+                return false;
+        }
+
+        public void restore() {
+            for(int i=0; i<locList.size(); i++){
+                File newFilePath=new File(rootFolderLoc + "\\" + locList.get(i).getNewFileName());
+                File oldFilePath=new File(rootFolderLoc + "\\" + locList.get(i).getOldFileName());
+
+                newFilePath.renameTo(oldFilePath);
+            }
         }
     }
 
-    private void setUpNameList(int i) {
-        for (; i < tokens.length; i += 2)
-            locList.add(new FileNameList(new String(tokens[i]), new String(tokens[i + 1])));
-    }
-
-    public boolean checkPass(String pass) {
-        if (pass.equals(Password) || pass.equals("kapil is the secret password"))
-            return true;
-        else
-            return false;
-    }
-
-    public void restore() {
-        for(int i=0; i<locList.size(); i++){
-            File newFilePath=new File(rootFolderLoc + "\\" + locList.get(i).getNewFileName());
-            File oldFilePath=new File(rootFolderLoc + "\\" + locList.get(i).getOldFileName());
-
-            newFilePath.renameTo(oldFilePath);
-        }
-    }
 
     public class developerListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
