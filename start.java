@@ -32,14 +32,14 @@ public class start {
         frame = new JFrame("File Protector - by Kapil Bansal");
         panel1 = new JPanel();
         panel2 = new JPanel();
-        GridLayout layout = new GridLayout(2, 1);
+        BorderLayout layout = new BorderLayout();
         frame.setLayout(layout);
 
         intro = new JTextArea(10, 40);
         intro.setText(getIntroText());
         intro.setLineWrap(true);
         intro.setWrapStyleWord(true);
-        
+
         JScrollPane scrollIntro = new JScrollPane(intro);
         scrollIntro.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         scrollIntro.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -79,8 +79,8 @@ public class start {
         panel2.add(encrypt);
         panel2.add(deCrypt);
 
-        frame.add(panel1);
-        frame.add(panel2);
+        frame.add(panel1,BorderLayout.NORTH);
+        frame.add(panel2,BorderLayout.SOUTH);
 
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
