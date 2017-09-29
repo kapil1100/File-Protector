@@ -91,11 +91,11 @@ public class start {
     }
 
     private String getIntroText() {
-        introText = "\nAbout : This utility can be used to protect your files/folders from intruders.\n" +
+        introText = "\nAbout : This utility can be used to protect your folders from intruders.\n" +
                 "\nHow to use:-" +
                 "\nI. ENCRYPT : Use encrypt button to secure all the files in a folder." +
                 "\n        1. Click on encrpt button." +
-                "\n        2. Select a file/folder." +
+                "\n        2. Select a folder." +
                 "\n        3. Choose weather to add password or not(less security)." +
                 "\n        4. Add password." +
                 "\n        5. Done!" +
@@ -103,8 +103,8 @@ public class start {
                 "\nII. DECRYPT : Use deCrypt button to restore the file or a folder." +
                 "\n        1. Click on deCrypt button." +
                 "\n        2. Select the encrypted folder." +
-                "\n             (NOTE: Only encrypted files/folders can be decrypted.)" +
-                "\n        3. Enter the password to decrypt(if the file/folder is password protected)" +
+                "\n             (NOTE: Only encrypted folders can be decrypted.)" +
+                "\n        3. Enter the password to decrypt(if the folder is password protected)" +
                 "\n        4. Done! \n";
 
         return introText;
@@ -114,7 +114,7 @@ public class start {
         public void actionPerformed(ActionEvent e) {
 
             JFileChooser choose = new JFileChooser();
-            choose.setCurrentDirectory(new File("."));
+            choose.setCurrentDirectory(new File("C:/"));
             choose.setDialogTitle("Select a Directory for encryption:");
             choose.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             choose.setAcceptAllFileFilterUsed(false);
