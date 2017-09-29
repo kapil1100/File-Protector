@@ -140,7 +140,7 @@ public class start {
             // shows a warning message before encryption
             reply = JOptionPane.showConfirmDialog(frame,
                     "Are you sure you want to encrypt this folder."
-                            + "\nYou might not be able to decrypt it back to original state",
+                            + "\nYou might not be able to restore it!",
                     "Warning!", JOptionPane.YES_NO_OPTION);
 
             // if user not clicked the yes button
