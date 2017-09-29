@@ -384,8 +384,7 @@ public class start {
 
     public class developerListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            JOptionPane.showMessageDialog(frame, "This software is developed by Kapil Bansal \n - from NIEC\n"
-                    + "\nNo more information can be provided due to security reasons...");
+            JOptionPane.showMessageDialog(frame, "This software is developed by Kapil Bansal \n - from NIEC\n");
         }
     }
 
