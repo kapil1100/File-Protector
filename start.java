@@ -84,6 +84,7 @@ public class start {
 
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setMinimumSize(new Dimension(500,300));
         frame.setSize(500, 350);
         frame.setLocationRelativeTo(null);
 
