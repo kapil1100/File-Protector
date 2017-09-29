@@ -47,8 +47,8 @@ public class start {
         encrypt = new JButton("Encrypt");
         deCrypt = new JButton("De-Crypt");
 
-        encrypt.addActionListener(new creatorListener());
-        deCrypt.addActionListener(new restoreListener());
+        encrypt.addActionListener(new encryptListener());
+        deCrypt.addActionListener(new decryptListener());
 
         menuBar = new JMenuBar();
         fileMenu = new JMenu("File");
@@ -72,8 +72,8 @@ public class start {
 
         frame.setJMenuBar(menuBar);
 
-        creator.addActionListener(new creatorListener());
-        restore.addActionListener(new restoreListener());
+        creator.addActionListener(new encryptListener());
+        restore.addActionListener(new decryptListener());
 
         panel1.add(scrollIntro);
         panel2.add(encrypt);
@@ -110,7 +110,7 @@ public class start {
         return introText;
     }
 
-    public class creatorListener implements ActionListener {
+    public class encryptListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
 
             JFileChooser choose = new JFileChooser();
@@ -242,7 +242,7 @@ public class start {
         }
     }
 
-    public class restoreListener implements ActionListener {
+    public class decryptListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             JFileChooser choose = new JFileChooser();
             choose.setCurrentDirectory(new File("."));
