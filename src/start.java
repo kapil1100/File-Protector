@@ -316,7 +316,7 @@ public class start {
                                 restore();
                                 reader.close();
                                 theFile.delete();
-                                JOptionPane.showMessageDialog(frame, "Restoration successfull.");
+                                JOptionPane.showMessageDialog(frame, "Restoration successful.");
                                 break;
                             } else {
                                 //if the entered password is wrong.
@@ -327,9 +327,10 @@ public class start {
                                     JOptionPane.showMessageDialog(frame, "Wrong Password!\n" +
                                             (maxAllowedAttempts - attempt) +
                                             " attempt(s) remaining...");
-                                else
-                                    //close the reader when max allowed attempts limit reached.
-                                    reader.close();
+                                else {
+                                    //if the maximum attempt limit reached then show this message.
+                                    JOptionPane.showMessageDialog(frame, "Restoration Unsuccessful!");
+                                }
                             }
                         } else {
                             //if user closed the password box.
@@ -337,9 +338,12 @@ public class start {
                             break;
                         }
                     }
+                    //close the reader if the folder is not restored successfully.
+                    reader.close();
                 } catch (Exception e1) {
                     e1.printStackTrace();
                 }
+
             }
 
             // if the folder is not encrypted
@@ -376,6 +380,7 @@ public class start {
 
     public String getPassword(String titleMessage) {
         JPasswordField pf = new JPasswordField();
+        pf.grabFocus();
         String pass = null;
 
         int reply = JOptionPane.showConfirmDialog(frame, pf, titleMessage, JOptionPane.OK_CANCEL_OPTION,
