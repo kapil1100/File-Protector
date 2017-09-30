@@ -163,13 +163,26 @@ public class start {
             // the old locations and the new locations
             // will be stored in "thefile"
             File thefile = new File(rootFolderLoc + "\\jse34hdk34hj23lo45kaei89jc");
-            String password = getPassword("Enter Password:");
+            String password1 = getPassword("Enter Password:");
+            String confirmationPassword, titleMessage = "Confirm Password: ";
 
             //if user clicked ok button on password prompt.
-            if (password != null) {
-                saveFile(thefile, password);
-                renameFiles(thefile);
-                JOptionPane.showMessageDialog(frame, "Encryption Successfull !!");
+            if (password1 != null) {
+                //repeat until confirmation password matches password1.
+                do {
+                    confirmationPassword = getPassword(titleMessage);
+                    //if the user pressed cancel button on confirm password prompt.
+                    if (confirmationPassword == null) {
+                        JOptionPane.showMessageDialog(frame, "Encryption Unsuccessfull!!!");
+                        break;
+                    } else if (confirmationPassword.equals(password1)) {
+                        saveFile(thefile, password1);
+                        renameFiles(thefile);
+                        JOptionPane.showMessageDialog(frame, "Encryption Successfull !!");
+                        break;
+                    } else
+                        titleMessage = "Passwords do not moatch! Confirm Password: ";
+                } while (!confirmationPassword.equals(password1));
             } else {
                 //if user didn't clicked ok button.
                 JOptionPane.showMessageDialog(frame, "Encryption Unsuccessfull!!!");
@@ -298,10 +311,14 @@ public class start {
                             } else {
                                 //if the entered password is wrong.
                                 titleMessage = "Wrong Password! Enter again:";
-                                //show message box with number of attempts remaining.
-                                JOptionPane.showMessageDialog(frame, "Wrong Password!\n" +
-                                        (maxAllowedAttempts - attempt) +
-                                        " attempt(s) remaining...");
+
+                                if (attempt < maxAllowedAttempts)
+                                    //show message box with number of attempts remaining.
+                                    JOptionPane.showMessageDialog(frame, "Wrong Password!\n" +
+                                            (maxAllowedAttempts - attempt) +
+                                            " attempt(s) remaining...");
+                                else
+                                    reader.close();
                             }
                         } else {
                             //if user closed the password box.
