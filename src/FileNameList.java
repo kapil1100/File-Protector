@@ -1,5 +1,3 @@
-import java.io.File;
-
 public class FileNameList {
 
     private String mOldFileName, mNewFileName;
@@ -15,6 +13,10 @@ public class FileNameList {
 
     public String getNewFileName() {
         return mNewFileName;
+    }
+
+    public void setNewFileName(String newFileName) {
+        mNewFileName = newFileName;
     }
 
 }

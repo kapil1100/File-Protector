@@ -11,6 +11,9 @@ public class start {
 
     //maximum number of times wrong password can be entered.
     private final int maxAllowedAttempts = 3;
+    private final String knownFolderName = "df48eabsls3daj6ajhiaj";
+    private final int numOfRndmFolders = 50;
+    private final String knownFileName = "ckaad35dk2eedjk341jaj3jaj8";
 
     private JFrame frame;
     private JButton encryptButton, deCryptButton;
@@ -20,9 +23,10 @@ public class start {
     private JMenu fileMenu, aboutMenu, helpMenu;
     private JMenuItem creatorItem, restoreItem, exitItem, developerItem, forgotPassword;
     private File rootFolderLoc;
-    private ArrayList<FileNameList> fileLocList = new ArrayList<FileNameList>();
+    private ArrayList<FileNameList> fileLocList;
     private String introText;
     private String[] tokens;
+    private ArrayList<String> folderNameList;
 
     public static void main(String a[]) {
         new start().go();
@@ -143,7 +147,7 @@ public class start {
             // check whether the folder is already encrypted or not
             for (String fileName : fileNames) {
                 //file named 'ckaad35dk2eedjk341jaj3jaj8' must be present in the directory if the folder is encrypted.
-                if (fileName.equals("ckaad35dk2eedjk341jaj3jaj8")) {
+                if (fileName.equals(knownFileName)) {
                     JOptionPane.showMessageDialog(frame,
                             "The folder is already encrypted!!");
                     return;
@@ -160,6 +164,8 @@ public class start {
             if (reply != JOptionPane.YES_OPTION)
                 return;
 
+            fileLocList = new ArrayList<>();
+
             for (String fileName : fileNames) {
                 File currentFilePath = new File(rootFolderLoc + "\\" + fileName);
                 if (currentFilePath.isDirectory()) {
@@ -172,7 +178,8 @@ public class start {
 
             // the old locations and the new locations
             // will be stored in "thefile"
-            File thefile = new File(rootFolderLoc + "\\ckaad35dk2eedjk341jaj3jaj8");
+            File thefile = new File(rootFolderLoc +
+                    "\\" + knownFolderName + "\\" + knownFileName);
             String password1 = getPassword("Enter Password:");
             String confirmationPassword, titleMessage = "Confirm Password: ";
 
@@ -187,6 +194,7 @@ public class start {
                         break;
                     } else if (confirmationPassword.equals(password1)) {
                         addFolders();
+                        alterFileLocList();
                         saveFile(thefile, password1);
                         renameFiles(thefile);
                         JOptionPane.showMessageDialog(frame, "Encryption Successfull !!");
@@ -198,10 +206,6 @@ public class start {
                 //if user didn't clicked ok button.
                 JOptionPane.showMessageDialog(frame, "Encryption Unsuccessfull!!!");
             }
-        }
-
-        private void addFolders() {
-            
         }
 
         private void saveFile(File thefile, String pass) {
@@ -235,7 +239,7 @@ public class start {
             String rndmFileName = new SessionIdentifierGenerator().nextSessionId();
 
             String oldFileName = new String(innerDirectories + oldFilePath.getName());
-            String newFileName = new String(innerDirectories + rndmFileName);
+            String newFileName = new String(rndmFileName);
             FileNameList n = new FileNameList(oldFileName, newFileName);
             fileLocList.add(n);
         }
@@ -253,10 +257,47 @@ public class start {
             }
         }
 
+        //add fifty folders in the directory
+        private void addFolders() {
+            folderNameList = new ArrayList<>();
+            String rndmFolderName;
+            File newFolder;
+            //adding the known folder name in the starting of the list
+            folderNameList.add(knownFolderName);
+            //adding numOfRndmFolders-1 randomly named folders
+            for (int i = 0; i < numOfRndmFolders - 1; i++) {
+                rndmFolderName = new SessionIdentifierGenerator().nextSessionId();
+                newFolder = new File(rootFolderLoc + "\\" + rndmFolderName);
+                //making a new folder with random name in the rootFolderLoc.
+                newFolder.mkdir();
+                folderNameList.add(rndmFolderName);
+            }
+            //adding 1 more known named folder
+            newFolder = new File(rootFolderLoc + "\\" + knownFolderName);
+            newFolder.mkdir();
+        }
+
+        //setting new file names with new folder names
+        //or assigning folders to the new files
+        private void alterFileLocList() {
+            int numberOfFiles = fileLocList.size();
+            for (int fileIndex = 0, folderIndex = 0; fileIndex < numberOfFiles; fileIndex++, folderIndex++) {
+                //since, there are 50 folders
+                if (folderIndex == numOfRndmFolders)
+                    folderIndex = 0;
+                fileLocList.get(fileIndex).setNewFileName(folderNameList.get(folderIndex) +
+                        "\\" + fileLocList.get(fileIndex).getNewFileName());
+            }
+        }
+
+        private void removeOldFolders() {
+
+        }
+
         //generates random strings(file/folder names).
         public final class SessionIdentifierGenerator {
             private SecureRandom random = new SecureRandom();
-            
+
             public String nextSessionId() {
                 return new BigInteger(130, random).toString(32);
             }
@@ -281,7 +322,7 @@ public class start {
 
             // check whether the folder is encrypted or not
             for (String fileName : fileNames) {
-                if (fileName.equals("ckaad35dk2eedjk341jaj3jaj8")) {
+                if (fileName.equals(knownFileName)) {
                     isEncrypted = true;
                     break;
                 }
@@ -299,7 +340,7 @@ public class start {
                 if (reply != JOptionPane.YES_OPTION)
                     return;
 
-                fileLocList = new ArrayList<FileNameList>();
+                fileLocList = new ArrayList<>();
 
                 theFile = new File(rootFolderLoc + "\\" + "ckaad35dk2eedjk341jaj3jaj8");
 
