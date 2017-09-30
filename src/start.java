@@ -94,7 +94,6 @@ public class start {
                 "\nI. ENCRYPT : Use encrypt button to secure all the files in a folder." +
                 "\n        1. Click on encrpt button." +
                 "\n        2. Select a folder." +
-                "\n        3. Choose weather to add password or not(less security)." +
                 "\n        4. Add password." +
                 "\n        5. Done!" +
                 "\n" +
@@ -102,7 +101,7 @@ public class start {
                 "\n        1. Click on deCrypt button." +
                 "\n        2. Select the encrypted folder." +
                 "\n             (NOTE: Only encrypted folders can be decrypted.)" +
-                "\n        3. Enter the password to decrypt(if the folder is password protected)" +
+                "\n        3. Enter the password to restore." +
                 "\n        4. Done! \n";
 
         return introText;
