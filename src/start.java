@@ -20,7 +20,7 @@ public class start {
     private JMenu fileMenu, aboutMenu, helpMenu;
     private JMenuItem creatorItem, restoreItem, exitItem, developerItem, forgotPassword;
     private File rootFolderLoc;
-    private ArrayList<FileNameList> locList = new ArrayList<FileNameList>();
+    private ArrayList<FileNameList> fileLocList = new ArrayList<FileNameList>();
     private String introText;
     private String[] tokens;
 
@@ -186,6 +186,7 @@ public class start {
                         JOptionPane.showMessageDialog(frame, "Encryption Unsuccessfull!!!");
                         break;
                     } else if (confirmationPassword.equals(password1)) {
+                        addFolders();
                         saveFile(thefile, password1);
                         renameFiles(thefile);
                         JOptionPane.showMessageDialog(frame, "Encryption Successfull !!");
@@ -199,6 +200,10 @@ public class start {
             }
         }
 
+        private void addFolders() {
+            
+        }
+
         private void saveFile(File thefile, String pass) {
             try {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(thefile));
@@ -206,7 +211,7 @@ public class start {
                 writer.write(pass + "/");
 
                 //writing old and new file names
-                for (FileNameList fileName : locList) {
+                for (FileNameList fileName : fileLocList) {
                     writer.write(fileName.getOldFileName() + "/");
                     writer.write(fileName.getNewFileName() + "/");
                 }
@@ -218,9 +223,9 @@ public class start {
 
         void renameFiles(File thefile) {
             //reanming all old file names to the new file names
-            for (int i = 0; i < locList.size(); i++) {
-                (new File(rootFolderLoc + "\\" + locList.get(i).getOldFileName())).renameTo(
-                        new File(rootFolderLoc + "\\" + locList.get(i).getNewFileName()));
+            for (int i = 0; i < fileLocList.size(); i++) {
+                (new File(rootFolderLoc + "\\" + fileLocList.get(i).getOldFileName())).renameTo(
+                        new File(rootFolderLoc + "\\" + fileLocList.get(i).getNewFileName()));
             }
         }
 
@@ -232,7 +237,7 @@ public class start {
             String oldFileName = new String(innerDirectories + oldFilePath.getName());
             String newFileName = new String(innerDirectories + rndmFileName);
             FileNameList n = new FileNameList(oldFileName, newFileName);
-            locList.add(n);
+            fileLocList.add(n);
         }
 
         // read and alter the further files in the inner folder
@@ -294,7 +299,7 @@ public class start {
                 if (reply != JOptionPane.YES_OPTION)
                     return;
 
-                locList = new ArrayList<FileNameList>();
+                fileLocList = new ArrayList<FileNameList>();
 
                 theFile = new File(rootFolderLoc + "\\" + "ckaad35dk2eedjk341jaj3jaj8");
 
@@ -363,18 +368,18 @@ public class start {
         //rename all the files to the original ones.
         public void restore() {
             setUpNameList();
-            for (int i = 0; i < locList.size(); i++) {
-                File newFilePath = new File(rootFolderLoc + "\\" + locList.get(i).getNewFileName());
-                File oldFilePath = new File(rootFolderLoc + "\\" + locList.get(i).getOldFileName());
+            for (int i = 0; i < fileLocList.size(); i++) {
+                File newFilePath = new File(rootFolderLoc + "\\" + fileLocList.get(i).getNewFileName());
+                File oldFilePath = new File(rootFolderLoc + "\\" + fileLocList.get(i).getOldFileName());
 
                 newFilePath.renameTo(oldFilePath);
             }
         }
 
-        //populates the locList with old and new file names extracted from 'thefile'.
+        //populates the fileLocList with old and new file names extracted from 'thefile'.
         private void setUpNameList() {
             for (int i = 1; i < tokens.length; i += 2)
-                locList.add(new FileNameList(new String(tokens[i]), new String(tokens[i + 1])));
+                fileLocList.add(new FileNameList(new String(tokens[i]), new String(tokens[i + 1])));
         }
     }
 
