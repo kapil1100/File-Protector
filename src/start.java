@@ -169,6 +169,7 @@ public class start {
                 hasPassword = true;
 
             saveFile(thefile);
+            renameFiles(thefile);
             JOptionPane.showMessageDialog(frame, "Encryption Successfull !!");
 
         }
@@ -214,17 +215,21 @@ public class start {
             }
         }
 
+        void renameFiles(File thefile){
+            for(int i=0; i<locList.size();i++){
+                (new File(rootFolderLoc + "\\" + locList.get(i).getOldFileName())).renameTo(
+                        new File(rootFolderLoc + "\\" + locList.get(i).getNewFileName()));
+            }
+        }
+
         private void changeIt(File oldFilePath, String innerDirectories) {
             //generating a random name for the file.
             String rndmFileName = new SessionIdentifierGenerator().nextSessionId();
 
-            File newFilePath = new File(oldFilePath.getParent() + "\\" + rndmFileName);
             String oldFileName=new String(innerDirectories + oldFilePath.getName());
             String newFileName=new String(innerDirectories + rndmFileName);
             FileNameList n = new FileNameList(oldFileName, newFileName);
             locList.add(n);
-
-            oldFilePath.renameTo(newFilePath);
         }
 
         // read and alter the further files in the inner folder
