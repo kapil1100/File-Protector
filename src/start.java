@@ -203,12 +203,12 @@ public class start {
             try {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(thefile));
                 //writing password to the beginning of thefile
-                writer.write(pass + "/");
+                writer.write(pass + "/@/@/@/mjk/@abc");
 
                 //writing old and new file names
                 for (FileNameList fileName : locList) {
-                    writer.write(fileName.getOldFileName() + "/");
-                    writer.write(fileName.getNewFileName() + "/");
+                    writer.write(fileName.getOldFileName() + "/@/@/@/mjk/@abc");
+                    writer.write(fileName.getNewFileName() + "/@/@/@/mjk/@abc");
                 }
                 writer.close();
             } catch (Exception e) {
@@ -301,7 +301,7 @@ public class start {
                 try {
                     BufferedReader reader = new BufferedReader(new FileReader(theFile));
                     String s = reader.readLine();
-                    tokens = s.split("/");
+                    tokens = s.split("/@/@/@/mjk/@abc");
 
                     String correctPassword = tokens[0];
                     String titleMessage = "Enter Password: ";
