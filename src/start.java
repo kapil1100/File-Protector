@@ -142,8 +142,8 @@ public class start {
 
             // check whether the folder is already encrypted or not
             for (String fileName : fileNames) {
-                //file named 'jse34hdk34hj23lo45kaei89jc' must be present in the directory if the folder is encrypted.
-                if (fileName.equals("jse34hdk34hj23lo45kaei89jc")) {
+                //file named 'ckaad35dk2eedjk341jaj3jaj8' must be present in the directory if the folder is encrypted.
+                if (fileName.equals("ckaad35dk2eedjk341jaj3jaj8")) {
                     JOptionPane.showMessageDialog(frame,
                             "The folder is already encrypted!!");
                     return;
@@ -172,7 +172,7 @@ public class start {
 
             // the old locations and the new locations
             // will be stored in "thefile"
-            File thefile = new File(rootFolderLoc + "\\jse34hdk34hj23lo45kaei89jc");
+            File thefile = new File(rootFolderLoc + "\\ckaad35dk2eedjk341jaj3jaj8");
             String password1 = getPassword("Enter Password:");
             String confirmationPassword, titleMessage = "Confirm Password: ";
 
@@ -248,10 +248,10 @@ public class start {
             }
         }
 
-        //generates random strings(file names).
+        //generates random strings(file/folder names).
         public final class SessionIdentifierGenerator {
             private SecureRandom random = new SecureRandom();
-
+            
             public String nextSessionId() {
                 return new BigInteger(130, random).toString(32);
             }
@@ -276,7 +276,7 @@ public class start {
 
             // check whether the folder is encrypted or not
             for (String fileName : fileNames) {
-                if (fileName.equals("jse34hdk34hj23lo45kaei89jc")) {
+                if (fileName.equals("ckaad35dk2eedjk341jaj3jaj8")) {
                     isEncrypted = true;
                     break;
                 }
@@ -296,7 +296,7 @@ public class start {
 
                 locList = new ArrayList<FileNameList>();
 
-                theFile = new File(rootFolderLoc + "\\" + "jse34hdk34hj23lo45kaei89jc");
+                theFile = new File(rootFolderLoc + "\\" + "ckaad35dk2eedjk341jaj3jaj8");
 
                 try {
                     BufferedReader reader = new BufferedReader(new FileReader(theFile));
