@@ -104,14 +104,14 @@ public class start {
     private String getIntroText() {
         introText = "\nAbout : This utility can be used to protect your folders from intruders.\n" +
                 "\nHow to use:-" +
-                "\nI. ENCRYPT : Use encryptButton button to secure all the files in a folder." +
+                "\nI. ENCRYPTION : Use encrypt button to secure all the files in a folder." +
                 "\n        1. Click on encrpt button." +
                 "\n        2. Select a folder." +
                 "\n        4. Add password." +
                 "\n        5. Done!" +
                 "\n" +
-                "\nII. DECRYPT : Use deCryptButton button to restore the rootFolderLoc or a folder." +
-                "\n        1. Click on deCryptButton button." +
+                "\nII. DECRYPTION / RESTORATION : Use deCrypt button to restore the folder." +
+                "\n        1. Click on deCrypt button." +
                 "\n        2. Select the encrypted folder." +
                 "\n             (NOTE: Only encrypted folders can be decrypted.)" +
                 "\n        3. Enter the password to restore." +
