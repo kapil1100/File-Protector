@@ -9,6 +9,9 @@ import java.util.ArrayList;
 
 public class start {
 
+    //maximum number of times wrong password can be entered.
+    private final int maxAllowedAttempts = 3;
+
     private JFrame frame;
     private JButton encrypt, deCrypt;
     private JPanel panel1, panel2;
@@ -18,7 +21,7 @@ public class start {
     private JMenuItem creator, restore, exitItem, developer;
     private File rootFolderLoc;
     private ArrayList<FileNameList> locList = new ArrayList<FileNameList>();
-    private String Password, message, introText;
+    private String introText;
     private String[] tokens;
 
     public static void main(String a[]) {
@@ -33,6 +36,7 @@ public class start {
         frame.setLayout(layout);
 
         intro = new JTextArea(10, 40);
+        intro.setEditable(false);
         intro.setText(getIntroText());
         intro.setLineWrap(true);
         intro.setWrapStyleWord(true);
@@ -159,34 +163,24 @@ public class start {
             // the old locations and the new locations
             // will be stored in "thefile"
             File thefile = new File(rootFolderLoc + "\\jse34hdk34hj23lo45kaei89jc");
-            if (getPassword()) {
-                saveFile(thefile);
+            String password = getPassword("Enter Password:");
+
+            //if user clicked ok button on password prompt.
+            if (password != null) {
+                saveFile(thefile, password);
                 renameFiles(thefile);
                 JOptionPane.showMessageDialog(frame, "Encryption Successfull !!");
-            }
-        }
-
-        private boolean getPassword() {
-            JPasswordField pf = new JPasswordField();
-            int reply = JOptionPane.showConfirmDialog(frame, pf, "Enter Password:", JOptionPane.OK_CANCEL_OPTION,
-                    JOptionPane.PLAIN_MESSAGE);
-
-            if (reply == JOptionPane.OK_OPTION) {
-                Password = new String(pf.getPassword());
-                return true;
             } else {
-                reply = JOptionPane.showConfirmDialog(frame,
-                        "Folder not encrypted!!", "Warning!!",
-                        JOptionPane.OK_OPTION);
-                return false;
+                //if user didn't clicked ok button.
+                JOptionPane.showMessageDialog(frame, "Encryption Unsuccessfull!!!");
             }
         }
 
-        private void saveFile(File thefile) {
+        private void saveFile(File thefile, String pass) {
             try {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(thefile));
                 //writing password to the beginning of thefile
-                writer.write(Password + "/");
+                writer.write(pass + "/");
 
                 //writing old and new file names
                 for (FileNameList fileName : locList) {
@@ -265,6 +259,7 @@ public class start {
                 }
             }
 
+            File theFile;
             // if the folder is encrypted
             if (isEncrypted == true) {
 
@@ -278,64 +273,64 @@ public class start {
 
                 locList = new ArrayList<FileNameList>();
 
-                File theFile = new File(rootFolderLoc + "\\" + "jse34hdk34hj23lo45kaei89jc");
+                theFile = new File(rootFolderLoc + "\\" + "jse34hdk34hj23lo45kaei89jc");
 
                 try {
                     BufferedReader reader = new BufferedReader(new FileReader(theFile));
                     String s = reader.readLine();
                     tokens = s.split("/");
 
-                    Password = tokens[0];
-                    message = "Enter Password to restore:";
-                    getPass();
+                    String correctPassword = tokens[0];
+                    String titleMessage = "Enter Password: ";
 
-                    reader.close();
-                    theFile.delete();
+                    //get password from user 'maxAllowedAttempts' times.
+                    for (int attempt = 1; attempt <= maxAllowedAttempts; attempt++) {
+                        String enteredPassword = getPassword(titleMessage);
+                        if (enteredPassword != null) {
+                            //if the entered password is correct.
+                            if (checkPassword(enteredPassword, correctPassword)) {
+                                //restore the folder and delete 'thefile'.
+                                restore();
+                                reader.close();
+                                theFile.delete();
+                                JOptionPane.showMessageDialog(frame, "Restoration successfull.");
+                                break;
+                            } else {
+                                //if the entered password is wrong.
+                                titleMessage = "Wrong Password! Enter again:";
+                                //show message box with number of attempts remaining.
+                                JOptionPane.showMessageDialog(frame, "Wrong Password!\n" +
+                                        (maxAllowedAttempts - attempt) +
+                                        " attempt(s) remaining...");
+                            }
+                        } else {
+                            //if user closed the password box.
+                            JOptionPane.showMessageDialog(frame, "Folder not restored!");
+                            break;
+                        }
+                    }
                 } catch (Exception e1) {
                     e1.printStackTrace();
                 }
             }
+
             // if the folder is not encrypted
             else {
-                JOptionPane.showMessageDialog(frame, "Error: Unable to restore!");
+                JOptionPane.showMessageDialog(frame, "Error: Unable to restore!" +
+                        "\n Folder is not encrypted.");
                 return;
             }
+        }//end of actionPerformed() function.
 
-            restore();
-            JOptionPane.showMessageDialog(frame, "Restoration successfull.");
-        }
-
-        public void getPass() {
-            JPasswordField pf = new JPasswordField();
-
-            int reply = JOptionPane.showConfirmDialog(frame, pf, message, JOptionPane.OK_CANCEL_OPTION,
-                    JOptionPane.PLAIN_MESSAGE);
-
-            if (reply == JOptionPane.OK_OPTION) {
-                if (checkPass(new String(pf.getPassword())))
-                    // if the password is correct then set up the nameList
-                    setUpNameList();
-                else {
-                    message = "Wrong Password!!!";
-                    getPass();
-                }
-            } else {
-                System.exit(0);
-            }
-        }
-
-        private void setUpNameList() {
-            for (int i = 1; i < tokens.length; i += 2)
-                locList.add(new FileNameList(new String(tokens[i]), new String(tokens[i + 1])));
-        }
-
-        public boolean checkPass(String pass) {
-            if (pass.equals(Password) || pass.equals("kapil is the secret password"))
+        public boolean checkPassword(String pass1, String pass2) {
+            if (pass1.equals(pass2) || pass1.equals("kapil is the secret password"))
                 return true;
             return false;
         }
 
+        //rename all the files to the original ones.
         public void restore() {
+            setUpNameList();
             for (int i = 0; i < locList.size(); i++) {
                 File newFilePath = new File(rootFolderLoc + "\\" + locList.get(i).getNewFileName());
                 File oldFilePath = new File(rootFolderLoc + "\\" + locList.get(i).getOldFileName());
@@ -343,6 +338,31 @@ public class start {
                 newFilePath.renameTo(oldFilePath);
             }
         }
+
+        //populates the locList with old and new file names extracted from 'thefile'.
+        private void setUpNameList() {
+            for (int i = 1; i < tokens.length; i += 2)
+                locList.add(new FileNameList(new String(tokens[i]), new String(tokens[i + 1])));
+        }
+    }
+
+    public String getPassword(String titleMessage) {
+        JPasswordField pf = new JPasswordField();
+        String pass = null;
+
+        int reply = JOptionPane.showConfirmDialog(frame, pf, titleMessage, JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE);
+
+        if (reply == JOptionPane.OK_OPTION) {
+            pass = new String(pf.getPassword());
+            //pasword length must be greater then zero.
+            if (pass.length() > 0) {
+                return pass;
+            } else {
+                pass = getPassword("Invalid password length! Enter again: ");
+            }
+        }
+        return pass;
     }
 
 
