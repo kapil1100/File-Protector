@@ -13,12 +13,12 @@ public class start {
     private final int maxAllowedAttempts = 3;
 
     private JFrame frame;
-    private JButton encrypt, deCrypt;
+    private JButton encryptButton, deCryptButton;
     private JPanel panel1, panel2;
     private JTextArea intro;
     private JMenuBar menuBar;
-    private JMenu fileMenu;
-    private JMenuItem creator, restore, exitItem, developer;
+    private JMenu fileMenu, aboutMenu, helpMenu;
+    private JMenuItem creatorItem, restoreItem, exitItem, developerItem, forgotPassword;
     private File rootFolderLoc;
     private ArrayList<FileNameList> locList = new ArrayList<FileNameList>();
     private String introText;
@@ -30,8 +30,6 @@ public class start {
 
     public void go() {
         frame = new JFrame("File Protector - by Kapil Bansal");
-        panel1 = new JPanel();
-        panel2 = new JPanel();
         BorderLayout layout = new BorderLayout();
         frame.setLayout(layout);
 
@@ -41,47 +39,59 @@ public class start {
         intro.setLineWrap(true);
         intro.setWrapStyleWord(true);
 
+        //adding intro to scrollpane.
         JScrollPane scrollIntro = new JScrollPane(intro);
         scrollIntro.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         scrollIntro.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-        encrypt = new JButton("Encrypt");
-        deCrypt = new JButton("De-Crypt");
+        panel1 = new JPanel();
+        panel2 = new JPanel();
 
-        encrypt.addActionListener(new encryptListener());
-        deCrypt.addActionListener(new decryptListener());
+        encryptButton = new JButton("Encrypt");
+        deCryptButton = new JButton("De-Crypt");
 
+        //Main menu bar
         menuBar = new JMenuBar();
+
+        //menu bar options...
         fileMenu = new JMenu("File");
-        creator = new JMenuItem("Encrypt");
-        restore = new JMenuItem("Restore");
+        aboutMenu = new JMenu("About");
+        helpMenu = new JMenu("Help");
+
+        //menu items...
+        creatorItem = new JMenuItem("Encrypt");
+        restoreItem = new JMenuItem("Restore");
         exitItem = new JMenuItem("Exit");
-        exitItem.addActionListener(new exitListener());
+        developerItem = new JMenuItem("About Developer");
+        forgotPassword = new JMenuItem("Forgot Password");
 
-        fileMenu.add(creator);
-        fileMenu.add(restore);
+        fileMenu.add(creatorItem);
+        fileMenu.add(restoreItem);
         fileMenu.add(exitItem);
+        aboutMenu.add(developerItem);
+        helpMenu.add(forgotPassword);
+
         menuBar.add(fileMenu);
+        menuBar.add(aboutMenu);
+        menuBar.add(helpMenu);
 
-        JMenu about = new JMenu("About");
-        developer = new JMenuItem("About Developer");
-
-        developer.addActionListener(new developerListener());
-
-        about.add(developer);
-        menuBar.add(about);
-
-        frame.setJMenuBar(menuBar);
-
-        creator.addActionListener(new encryptListener());
-        restore.addActionListener(new decryptListener());
+        //adding action listeners...
+        encryptButton.addActionListener(new encryptListener());
+        deCryptButton.addActionListener(new decryptListener());
+        creatorItem.addActionListener(new encryptListener());
+        restoreItem.addActionListener(new decryptListener());
+        exitItem.addActionListener(new exitListener());
+        developerItem.addActionListener(new developerListener());
+        forgotPassword.addActionListener(new forgotPasswordListener());
 
         panel1.add(scrollIntro);
-        panel2.add(encrypt);
-        panel2.add(deCrypt);
+        panel2.add(encryptButton);
+        panel2.add(deCryptButton);
 
         frame.add(panel1, BorderLayout.NORTH);
         frame.add(panel2, BorderLayout.SOUTH);
+
+        frame.setJMenuBar(menuBar);
 
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -94,14 +104,14 @@ public class start {
     private String getIntroText() {
         introText = "\nAbout : This utility can be used to protect your folders from intruders.\n" +
                 "\nHow to use:-" +
-                "\nI. ENCRYPT : Use encrypt button to secure all the files in a folder." +
+                "\nI. ENCRYPT : Use encryptButton button to secure all the files in a folder." +
                 "\n        1. Click on encrpt button." +
                 "\n        2. Select a folder." +
                 "\n        4. Add password." +
                 "\n        5. Done!" +
                 "\n" +
-                "\nII. DECRYPT : Use deCrypt button to restore the rootFolderLoc or a folder." +
-                "\n        1. Click on deCrypt button." +
+                "\nII. DECRYPT : Use deCryptButton button to restore the rootFolderLoc or a folder." +
+                "\n        1. Click on deCryptButton button." +
                 "\n        2. Select the encrypted folder." +
                 "\n             (NOTE: Only encrypted folders can be decrypted.)" +
                 "\n        3. Enter the password to restore." +
@@ -142,7 +152,7 @@ public class start {
 
             //display warning message before encryption
             reply = JOptionPane.showConfirmDialog(frame,
-                    "Are you sure you want to encrypt this folder."
+                    "Are you sure you want to encryptButton this folder."
                             + "\nYou may not be able to restore it!",
                     "Warning!", JOptionPane.YES_NO_OPTION);
 
@@ -318,6 +328,7 @@ public class start {
                                             (maxAllowedAttempts - attempt) +
                                             " attempt(s) remaining...");
                                 else
+                                    //close the reader when max allowed attempts limit reached.
                                     reader.close();
                             }
                         } else {
@@ -398,6 +409,13 @@ public class start {
                 System.exit(1);
             else
                 return;
+        }
+    }
+
+    private class forgotPasswordListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            JOptionPane.showMessageDialog(frame, "Contact developer:" +
+                    "\nemail-id :  kapilbansal73@gmail.com");
         }
     }
 }
