@@ -27,6 +27,7 @@ public class start {
     private String introText;
     private String[] tokens;
     private ArrayList<String> folderNameList;
+    private ArrayList<File> oldFolderList;
 
     public static void main(String a[]) {
         new start().go();
@@ -165,6 +166,7 @@ public class start {
                 return;
 
             fileLocList = new ArrayList<>();
+            oldFolderList = new ArrayList<>();
 
             for (String fileName : fileNames) {
                 File currentFilePath = new File(rootFolderLoc + "\\" + fileName);
@@ -193,9 +195,14 @@ public class start {
                         JOptionPane.showMessageDialog(frame, "Encryption Unsuccessfull!!!");
                         break;
                     } else if (confirmationPassword.equals(password1)) {
+                        //add randomly named folders and update the fileLocList accordingly.
                         addFolders();
                         alterFileLocList();
+                        //save the file (with known file name).
                         saveFile(thefile, password1);
+                        //delete the old folders
+                        deleteOldFolders();
+                        //rename the files from old to new randowmly assigned names.
                         renameFiles(thefile);
                         JOptionPane.showMessageDialog(frame, "Encryption Successfull !!");
                         break;
@@ -246,6 +253,9 @@ public class start {
 
         // read and alter the further files in the inner folder
         private void processIt(File folderPath, String innerDirectories) {
+            //adding old folder paths to the list to delete these folders later.
+            oldFolderList.add(folderPath);
+
             String[] fileNames = folderPath.list();
             innerDirectories += folderPath.getName() + "\\";
             for (String fileName : fileNames) {
@@ -290,8 +300,12 @@ public class start {
             }
         }
 
-        private void removeOldFolders() {
-
+        //will delete all the folders in the oldFolderList
+        private void deleteOldFolders() {
+            //deleting folders in reverse order because folders in the starting may not be empty.
+            for (int i = oldFolderList.size() - 1; i >= 0; i--) {
+                oldFolderList.get(i).delete();
+            }
         }
 
         //generates random strings(file/folder names).
