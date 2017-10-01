@@ -224,11 +224,11 @@ public class start {
 
                 //writing old and new file names
 
-                for (FileNameList fileName : locList) {
+                for (FileNameList fileName : fileNameList) {
                     writer.write(fileName.getOldFileName() + "/@#/%$/*&/()09");
                     writer.write(fileName.getNewFileName() + "/@#/%$/*&/()09");
                 }
-				
+
                 writer.close();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -377,7 +377,7 @@ public class start {
 
                                 //delete old folders(in this case randomly named folders).
                                 deleteOldFolders();
-                                
+
                                 JOptionPane.showMessageDialog(frame, "Restoration successful.");
                                 break;
                             } else {
