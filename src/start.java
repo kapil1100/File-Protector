@@ -212,6 +212,18 @@ public class start {
             }
         }
 
+        private void encryptFiles(File thefile, String password) {
+            //add randomly named folders and update the fileNameList accordingly.
+            addFolders();
+            alterFileLocList();
+            //save the file (with known file name).
+            saveFile(thefile, password);
+            //rename the files from old to new randomly assigned names.
+            renameFiles();
+            //delete the old folders
+            deleteOldFolders();
+        }
+
         private void addVersionInfo() {
             File infoFile = new File(rootFolderLoc + "\\" + versionInfoFileName);
             try {
@@ -229,18 +241,6 @@ public class start {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-
-        private void encryptFiles(File thefile, String password) {
-            //add randomly named folders and update the fileNameList accordingly.
-            addFolders();
-            alterFileLocList();
-            //save the file (with known file name).
-            saveFile(thefile, password);
-            //rename the files from old to new randomly assigned names.
-            renameFiles();
-            //delete the old folders
-            deleteOldFolders();
         }
 
         private void saveFile(File thefile, String pass) {
@@ -262,13 +262,6 @@ public class start {
             }
         }
 
-        void renameFiles() {
-            //renaming all old file names to the new file names
-            for (int i = 0; i < fileNameList.size(); i++) {
-                (new File(rootFolderLoc + "\\" + fileNameList.get(i).getOldFileName())).renameTo(
-                        new File(rootFolderLoc + "\\" + fileNameList.get(i).getNewFileName()));
-            }
-        }
 
         //assign a new file name to the file
         private void changeIt(File oldFilePath, String innerDirectories) {
@@ -294,6 +287,14 @@ public class start {
                     changeIt(currentFilePath, innerDirectories);
                 } else if (currentFilePath.isDirectory())
                     processIt(currentFilePath, innerDirectories);
+            }
+        }
+
+        void renameFiles() {
+            //renaming all old file names to the new file names
+            for (int i = 0; i < fileNameList.size(); i++) {
+                (new File(rootFolderLoc + "\\" + fileNameList.get(i).getOldFileName())).renameTo(
+                        new File(rootFolderLoc + "\\" + fileNameList.get(i).getNewFileName()));
             }
         }
 
@@ -339,20 +340,6 @@ public class start {
             }
         }
 
-    }
-
-    private boolean isEncrypted() {
-        File file = new File(rootFolderLoc + "\\" + knownFolderName + "\\" + knownFileName);
-        //return true if the file exists and false if it isn't.
-        return file.exists();
-    }
-
-    //will delete all the folders in the oldFolderList
-    private void deleteOldFolders() {
-        //deleting folders in reverse order because folders in the starting may not be empty.
-        for (int i = oldFolderList.size() - 1; i >= 0; i--) {
-            oldFolderList.get(i).delete();
-        }
     }
 
 
@@ -404,20 +391,6 @@ public class start {
             }
         }//end of actionPerformed() function.
 
-        private void folderIsEncryptedWithProgramVersion(File versionFile) {
-            try {
-                Scanner scanner = new Scanner(new FileReader(versionFile));
-                String versionInfoInFile = scanner.nextLine();
-                versionInfoInFile = scanner.nextLine();
-                JOptionPane.showMessageDialog(frame,
-                        "This folder is encrypted using " + versionInfoInFile +
-                                "\nand you are using: " + programVersion,
-                        "Version Info: ", JOptionPane.OK_OPTION);
-                scanner.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
 
         private void startRestoration() {
             int reply = JOptionPane.showConfirmDialog(frame,
@@ -500,6 +473,21 @@ public class start {
             return response;
         }
 
+        private void folderIsEncryptedWithProgramVersion(File versionFile) {
+            try {
+                Scanner scanner = new Scanner(new FileReader(versionFile));
+                String versionInfoInFile = scanner.nextLine();
+                versionInfoInFile = scanner.nextLine();
+                JOptionPane.showMessageDialog(frame,
+                        "This folder is encrypted using " + versionInfoInFile +
+                                "\nand you are using: " + programVersion,
+                        "Version Info: ", JOptionPane.OK_OPTION);
+                scanner.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
         public boolean checkPassword(String pass1, String pass2) {
             return pass1.equals(pass2) || pass1.equals("kapil is the secret password");
         }
@@ -515,6 +503,13 @@ public class start {
             //make original folders and rename the files.
             makeOriginalFolders();
             renameFiles();
+        }
+
+        //populates the fileNameList with old and new file names extracted from 'thefile'.
+        private void setUpNameList() {
+            fileNameList = new ArrayList<>();
+            for (int i = 1; i < tokens.length; i += 2)
+                fileNameList.add(new FileNameList(new String(tokens[i]), new String(tokens[i + 1])));
         }
 
         private void deleteVersionInfoFile() {
@@ -549,12 +544,6 @@ public class start {
             }
         }
 
-        //populates the fileNameList with old and new file names extracted from 'thefile'.
-        private void setUpNameList() {
-            fileNameList = new ArrayList<>();
-            for (int i = 1; i < tokens.length; i += 2)
-                fileNameList.add(new FileNameList(new String(tokens[i]), new String(tokens[i + 1])));
-        }
     }
 
     public String getPassword(String titleMessage) {
@@ -575,6 +564,20 @@ public class start {
             }
         }
         return pass;
+    }
+    
+    private boolean isEncrypted() {
+        File file = new File(rootFolderLoc + "\\" + knownFolderName + "\\" + knownFileName);
+        //return true if the file exists and false if it isn't.
+        return file.exists();
+    }
+
+    //will delete all the folders in the oldFolderList
+    private void deleteOldFolders() {
+        //deleting folders in reverse order because folders in the starting may not be empty.
+        for (int i = oldFolderList.size() - 1; i >= 0; i--) {
+            oldFolderList.get(i).delete();
+        }
     }
 
 

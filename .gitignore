@@ -4,3 +4,5 @@ bin/
 .project
 .settings/
 File\ Protector.iml
+classes/
+src/META-INF/
