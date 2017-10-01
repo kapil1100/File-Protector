@@ -372,8 +372,10 @@ public class start {
                                 restore();
                                 reader.close();
                                 theFile.delete();
-                                //this will delete the folder with 'knownFolderName' name
-                                deleteKnownFolder();
+
+                                //delete old folders(in this case randomly named folders).
+                                deleteOldFolders();
+                                
                                 JOptionPane.showMessageDialog(frame, "Restoration successful.");
                                 break;
                             } else {
@@ -412,10 +414,6 @@ public class start {
             }
         }//end of actionPerformed() function.
 
-        private void deleteKnownFolder() {
-            File lastFolder = new File(rootFolderLoc + "\\" + knownFolderName);
-            lastFolder.delete();
-        }
 
         public boolean checkPassword(String pass1, String pass2) {
             if (pass1.equals(pass2) || pass1.equals("kapil is the secret password"))
@@ -432,13 +430,6 @@ public class start {
             //make original folders and rename the files.
             makeOriginalFolders();
             renameFiles();
-
-            //delete old folders(in this case randomly named folders).
-
-            //all folders except the 'knownFolderName' named folder won't be deleted
-            //because it contains a file named 'knownFileName'.
-            //So, that folder must be deleted after deleting that file.
-            deleteOldFolders();
         }
 
         //setUp old folders list(in this case randomly named folders).
