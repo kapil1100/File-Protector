@@ -190,15 +190,9 @@ public class start {
                         JOptionPane.showMessageDialog(frame, "Encryption Unsuccessfull!!!");
                         break;
                     } else if (confirmationPassword.equals(password1)) {
-                        //add randomly named folders and update the fileNameList accordingly.
-                        addFolders();
-                        alterFileLocList();
-                        //save the file (with known file name).
-                        saveFile(thefile, password1);
-                        //delete the old folders
-                        deleteOldFolders();
-                        //rename the files from old to new randowmly assigned names.
-                        renameFiles(thefile);
+                        //encrypt the files when user confirms the password.
+                        encryptFiles(thefile, password1);
+
                         JOptionPane.showMessageDialog(frame, "Encryption Successfull !!");
                         break;
                     } else
@@ -208,6 +202,18 @@ public class start {
                 //if user didn't clicked ok button.
                 JOptionPane.showMessageDialog(frame, "Encryption Unsuccessfull!!!");
             }
+        }
+
+        private void encryptFiles(File thefile, String password) {
+            //add randomly named folders and update the fileNameList accordingly.
+            addFolders();
+            alterFileLocList();
+            //save the file (with known file name).
+            saveFile(thefile, password);
+            //rename the files from old to new randowmly assigned names.
+            renameFiles(thefile);
+            //delete the old folders
+            deleteOldFolders();
         }
 
         private void saveFile(File thefile, String pass) {
