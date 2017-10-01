@@ -16,7 +16,7 @@ public class start {
     private final String knownFileName = "ckaad35dk2eedjk341jaj3jaj8";
     private final String fileRegex = "/@@///@#19Abd";
     private final int numOfRndmFolders = 50;
-    private final String programVersion = "File Protector v2.0";
+    private final String programVersion = "File Protector v2.1";
     private final String versionInfoFileName = "versionInfo.inf";
 
     private JFrame frame;
@@ -413,6 +413,7 @@ public class start {
                         "This folder is encrypted using " + versionInfoInFile +
                                 "\nand you are using: " + programVersion,
                         "Version Info: ", JOptionPane.OK_OPTION);
+                scanner.close();
             } catch (Exception e) {
                 e.printStackTrace();
             }
