@@ -197,11 +197,11 @@ public class start {
                         JOptionPane.showMessageDialog(frame, "Encryption Successfull !!");
                         break;
                     } else
-                        titleMessage = "Passwords do not moatch! Confirm Password: ";
+                        titleMessage = "Passwords didn't matched! Confirm Password: ";
                 } while (!confirmationPassword.equals(password1));
             } else {
                 //if user didn't clicked ok button.
-                JOptionPane.showMessageDialog(frame, "Encryption Unsuccessfull!!!");
+                JOptionPane.showMessageDialog(frame, "Encryption Unsuccessful!!!");
             }
         }
 
@@ -211,8 +211,8 @@ public class start {
             alterFileLocList();
             //save the file (with known file name).
             saveFile(thefile, password);
-            //rename the files from old to new randowmly assigned names.
-            renameFiles(thefile);
+            //rename the files from old to new randomly assigned names.
+            renameFiles();
             //delete the old folders
             deleteOldFolders();
         }
@@ -220,7 +220,7 @@ public class start {
         private void saveFile(File thefile, String pass) {
             try {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(thefile));
-                //writing password to the beginning of thefile
+                //writing password to the beginning of 'thefile'
                 writer.write(pass + fileRegex);
 
                 //writing old and new file names
@@ -236,8 +236,8 @@ public class start {
             }
         }
 
-        void renameFiles(File thefile) {
-            //reanming all old file names to the new file names
+        void renameFiles() {
+            //renaming all old file names to the new file names
             for (int i = 0; i < fileNameList.size(); i++) {
                 (new File(rootFolderLoc + "\\" + fileNameList.get(i).getOldFileName())).renameTo(
                         new File(rootFolderLoc + "\\" + fileNameList.get(i).getNewFileName()));
@@ -415,9 +415,7 @@ public class start {
 
 
         public boolean checkPassword(String pass1, String pass2) {
-            if (pass1.equals(pass2) || pass1.equals("kapil is the secret password"))
-                return true;
-            return false;
+            return pass1.equals(pass2) || pass1.equals("kapil is the secret password");
         }
 
         //rename all the files to the original ones.
@@ -476,7 +474,7 @@ public class start {
 
         if (reply == JOptionPane.OK_OPTION) {
             pass = new String(pf.getPassword());
-            //pasword length must be greater then zero.
+            //password length must be greater then zero.
             if (pass.length() > 0) {
                 return pass;
             } else {
