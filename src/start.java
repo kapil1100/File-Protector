@@ -11,9 +11,10 @@ public class start {
 
     //maximum number of times wrong password can be entered.
     private final int maxAllowedAttempts = 3;
-    private final String knownFolderName = "df48eabsls3daj6ajhiaj";
-    private final int numOfRndmFolders = 50;
+    private final String knownFolderName = "df48eabsls3daj6ajhiaj7hdkls";
     private final String knownFileName = "ckaad35dk2eedjk341jaj3jaj8";
+    private final String fileRegex = "/@@///@#19Abd";
+    private final int numOfRndmFolders = 50;
 
     private JFrame frame;
     private JButton encryptButton, deCryptButton;
@@ -220,13 +221,13 @@ public class start {
             try {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(thefile));
                 //writing password to the beginning of thefile
-                writer.write(pass + "/@#/%$/*&/()09");
+                writer.write(pass + fileRegex);
 
                 //writing old and new file names
 
                 for (FileNameList fileName : fileNameList) {
-                    writer.write(fileName.getOldFileName() + "/@#/%$/*&/()09");
-                    writer.write(fileName.getNewFileName() + "/@#/%$/*&/()09");
+                    writer.write(fileName.getOldFileName() + fileRegex);
+                    writer.write(fileName.getNewFileName() + fileRegex);
                 }
 
                 writer.close();
@@ -340,7 +341,6 @@ public class start {
 
             rootFolderLoc = choose.getSelectedFile();
 
-            File theFile;
             // if the folder is encrypted
             if (isEncrypted()) {
 
@@ -352,14 +352,12 @@ public class start {
                 if (reply != JOptionPane.YES_OPTION)
                     return;
 
-                fileNameList = new ArrayList<>();
-
-                theFile = new File(rootFolderLoc + "\\" + knownFolderName + "\\" + knownFileName);
+                File theFile = new File(rootFolderLoc + "\\" + knownFolderName + "\\" + knownFileName);
 
                 try {
                     BufferedReader reader = new BufferedReader(new FileReader(theFile));
                     String s = reader.readLine();
-                    tokens = s.split("/@#/%$/*&/()09");
+                    tokens = s.split(fileRegex);
 
                     String correctPassword = tokens[0];
                     String titleMessage = "Enter Password: ";
@@ -405,7 +403,6 @@ public class start {
                 } catch (Exception e1) {
                     e1.printStackTrace();
                 }
-
             }
 
             // if the folder is not encrypted
@@ -463,6 +460,7 @@ public class start {
 
         //populates the fileNameList with old and new file names extracted from 'thefile'.
         private void setUpNameList() {
+            fileNameList = new ArrayList<>();
             for (int i = 1; i < tokens.length; i += 2)
                 fileNameList.add(new FileNameList(new String(tokens[i]), new String(tokens[i + 1])));
         }
