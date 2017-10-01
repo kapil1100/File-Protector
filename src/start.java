@@ -241,6 +241,7 @@ public class start {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            infoFile.setReadOnly();
         }
 
         private void saveFile(File thefile, String pass) {
@@ -565,7 +566,7 @@ public class start {
         }
         return pass;
     }
-    
+
     private boolean isEncrypted() {
         File file = new File(rootFolderLoc + "\\" + knownFolderName + "\\" + knownFileName);
         //return true if the file exists and false if it isn't.
