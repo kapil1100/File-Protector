@@ -17,24 +17,27 @@ public class start {
     private final int numOfRndmFolders = 50;
 
     private JFrame frame;
-    private JButton encryptButton, deCryptButton;
-    private JPanel panel1, panel2;
-    private JTextArea intro;
-    private JMenuBar menuBar;
-    private JMenu fileMenu, aboutMenu, helpMenu;
-    private JMenuItem creatorItem, restoreItem, exitItem, developerItem, forgotPassword;
     private File rootFolderLoc;
     private ArrayList<FileNameList> fileNameList;
-    private String introText;
-    private String[] tokens;
     private ArrayList<String> folderNameList;
     private ArrayList<File> oldFolderList;
+    private String introText;
+    private String[] tokens;
+
 
     public static void main(String a[]) {
         new start().go();
     }
 
     public void go() {
+
+        JButton encryptButton, deCryptButton;
+        JPanel panel1, panel2;
+        JTextArea intro;
+        JMenuBar menuBar;
+        JMenu fileMenu, aboutMenu, helpMenu;
+        JMenuItem creatorItem, restoreItem, exitItem, developerItem, forgotPassword;
+
         frame = new JFrame("File Protector - by Kapil Bansal");
         BorderLayout layout = new BorderLayout();
         frame.setLayout(layout);
