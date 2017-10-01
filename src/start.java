@@ -15,6 +15,7 @@ public class start {
     private final String knownFileName = "ckaad35dk2eedjk341jaj3jaj8";
     private final String fileRegex = "/@@///@#19Abd";
     private final int numOfRndmFolders = 50;
+    private final String programVersion = "v2.0";
 
     private JFrame frame;
     private File rootFolderLoc;
@@ -196,7 +197,8 @@ public class start {
                     } else if (confirmationPassword.equals(password1)) {
                         //encrypt the files when user confirms the password.
                         encryptFiles(thefile, password1);
-
+                        //add a version info file.
+                        addVersionInfo();
                         JOptionPane.showMessageDialog(frame, "Encryption Successfull !!");
                         break;
                     } else
@@ -206,6 +208,23 @@ public class start {
                 //if user didn't clicked ok button.
                 JOptionPane.showMessageDialog(frame, "Encryption Unsuccessful!!!");
             }
+        }
+
+        private void addVersionInfo() {
+            File infoFile = new File(rootFolderLoc + "\\" + "versionInfo.inf");
+            try {
+                BufferedWriter writer = new BufferedWriter(new FileWriter(infoFile));
+                writer.write(getVersionInfoText());
+                writer.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        private String getVersionInfoText() {
+            String versionInfoText = "This folder is encrypted using File Protector " + programVersion + " ." +
+                    "\n Created by : Kapil Bansal";
+            return versionInfoText;
         }
 
         private void encryptFiles(File thefile, String password) {
@@ -424,12 +443,19 @@ public class start {
         //rename all the files to the original ones.
         public void restore() {
             setUpNameList();
+            //delete versionInfo.inf file
+            deleteVersionInfoFile();
             //set up old(randomly named folders in this case) folders list.
             setUpOldFolderList();
 
             //make original folders and rename the files.
             makeOriginalFolders();
             renameFiles();
+        }
+
+        private void deleteVersionInfoFile() {
+            File versionInfoFile = new File(rootFolderLoc + "\\" + "versionInfo.inf");
+            versionInfoFile.delete();
         }
 
         //setUp old folders list(in this case randomly named folders).
