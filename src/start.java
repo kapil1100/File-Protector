@@ -23,7 +23,7 @@ public class start {
     private JMenu fileMenu, aboutMenu, helpMenu;
     private JMenuItem creatorItem, restoreItem, exitItem, developerItem, forgotPassword;
     private File rootFolderLoc;
-    private ArrayList<FileNameList> fileLocList;
+    private ArrayList<FileNameList> fileNameList;
     private String introText;
     private String[] tokens;
     private ArrayList<String> folderNameList;
@@ -158,7 +158,7 @@ public class start {
             if (reply != JOptionPane.YES_OPTION)
                 return;
 
-            fileLocList = new ArrayList<>();
+            fileNameList = new ArrayList<>();
             oldFolderList = new ArrayList<>();
 
             String[] fileNames = rootFolderLoc.list();
@@ -190,7 +190,7 @@ public class start {
                         JOptionPane.showMessageDialog(frame, "Encryption Unsuccessfull!!!");
                         break;
                     } else if (confirmationPassword.equals(password1)) {
-                        //add randomly named folders and update the fileLocList accordingly.
+                        //add randomly named folders and update the fileNameList accordingly.
                         addFolders();
                         alterFileLocList();
                         //save the file (with known file name).
@@ -217,7 +217,7 @@ public class start {
                 writer.write(pass + "/");
 
                 //writing old and new file names
-                for (FileNameList fileName : fileLocList) {
+                for (FileNameList fileName : fileNameList) {
                     writer.write(fileName.getOldFileName() + "/");
                     writer.write(fileName.getNewFileName() + "/");
                 }
@@ -229,9 +229,9 @@ public class start {
 
         void renameFiles(File thefile) {
             //reanming all old file names to the new file names
-            for (int i = 0; i < fileLocList.size(); i++) {
-                (new File(rootFolderLoc + "\\" + fileLocList.get(i).getOldFileName())).renameTo(
-                        new File(rootFolderLoc + "\\" + fileLocList.get(i).getNewFileName()));
+            for (int i = 0; i < fileNameList.size(); i++) {
+                (new File(rootFolderLoc + "\\" + fileNameList.get(i).getOldFileName())).renameTo(
+                        new File(rootFolderLoc + "\\" + fileNameList.get(i).getNewFileName()));
             }
         }
 
@@ -243,7 +243,7 @@ public class start {
             String oldFileName = new String(innerDirectories + oldFilePath.getName());
             String newFileName = new String(rndmFileName);
             FileNameList n = new FileNameList(oldFileName, newFileName);
-            fileLocList.add(n);
+            fileNameList.add(n);
         }
 
         // read and alter the further files in the inner folder
@@ -285,21 +285,13 @@ public class start {
         //setting new file names with new folder names
         //or assigning folders to the new files
         private void alterFileLocList() {
-            int numberOfFiles = fileLocList.size();
+            int numberOfFiles = fileNameList.size();
             for (int fileIndex = 0, folderIndex = 0; fileIndex < numberOfFiles; fileIndex++, folderIndex++) {
                 //since, there are 50 folders
                 if (folderIndex == numOfRndmFolders)
                     folderIndex = 0;
-                fileLocList.get(fileIndex).setNewFileName(folderNameList.get(folderIndex) +
-                        "\\" + fileLocList.get(fileIndex).getNewFileName());
-            }
-        }
-
-        //will delete all the folders in the oldFolderList
-        private void deleteOldFolders() {
-            //deleting folders in reverse order because folders in the starting may not be empty.
-            for (int i = oldFolderList.size() - 1; i >= 0; i--) {
-                oldFolderList.get(i).delete();
+                fileNameList.get(fileIndex).setNewFileName(folderNameList.get(folderIndex) +
+                        "\\" + fileNameList.get(fileIndex).getNewFileName());
             }
         }
 
@@ -318,6 +310,14 @@ public class start {
         File file = new File(rootFolderLoc + "\\" + knownFolderName + "\\" + knownFileName);
         //return true if the file exists and false if it isn't.
         return file.exists();
+    }
+
+    //will delete all the folders in the oldFolderList
+    private void deleteOldFolders() {
+        //deleting folders in reverse order because folders in the starting may not be empty.
+        for (int i = oldFolderList.size() - 1; i >= 0; i--) {
+            oldFolderList.get(i).delete();
+        }
     }
 
 
@@ -344,9 +344,9 @@ public class start {
                 if (reply != JOptionPane.YES_OPTION)
                     return;
 
-                fileLocList = new ArrayList<>();
+                fileNameList = new ArrayList<>();
 
-                theFile = new File(rootFolderLoc + "\\" + "ckaad35dk2eedjk341jaj3jaj8");
+                theFile = new File(rootFolderLoc + "\\" + knownFolderName + "\\" + knownFileName);
 
                 try {
                     BufferedReader reader = new BufferedReader(new FileReader(theFile));
@@ -413,18 +413,47 @@ public class start {
         //rename all the files to the original ones.
         public void restore() {
             setUpNameList();
-            for (int i = 0; i < fileLocList.size(); i++) {
-                File newFilePath = new File(rootFolderLoc + "\\" + fileLocList.get(i).getNewFileName());
-                File oldFilePath = new File(rootFolderLoc + "\\" + fileLocList.get(i).getOldFileName());
+            //set up old(randomly named folders in this case) folders list.
+            setUpOldFolderList();
+
+            //make original folders and rename the files.
+            makeOriginalFolders();
+            renameFiles();
+
+            //delete old folders(in this case randomly named folders).
+            deleteOldFolders();
+        }
+
+        private void setUpOldFolderList() {
+            //since all the files in rootFolderLoc are folders.
+            oldFolderList = new ArrayList<>();
+            File[] folder = rootFolderLoc.listFiles();
+            for (int i = 0; i < numOfRndmFolders; i++) {
+                oldFolderList.add(folder[i]);
+            }
+        }
+
+        private void makeOriginalFolders() {
+            File file;
+            for (int i = 0; i < fileNameList.size(); i++) {
+                file = new File(rootFolderLoc + "\\" + fileNameList.get(i).getNewFileName());
+                file.getParentFile().mkdirs();
+            }
+        }
+
+        private void renameFiles() {
+            for (int i = 0; i < fileNameList.size(); i++) {
+                File newFilePath = new File(rootFolderLoc + "\\" + fileNameList.get(i).getNewFileName());
+                File oldFilePath = new File(rootFolderLoc + "\\" + fileNameList.get(i).getOldFileName());
 
                 newFilePath.renameTo(oldFilePath);
             }
         }
 
-        //populates the fileLocList with old and new file names extracted from 'thefile'.
+        //populates the fileNameList with old and new file names extracted from 'thefile'.
         private void setUpNameList() {
             for (int i = 1; i < tokens.length; i += 2)
-                fileLocList.add(new FileNameList(new String(tokens[i]), new String(tokens[i + 1])));
+                fileNameList.add(new FileNameList(new String(tokens[i]), new String(tokens[i + 1])));
         }
     }
 
