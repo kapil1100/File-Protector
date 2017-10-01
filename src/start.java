@@ -6,6 +6,7 @@ import java.io.*;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class start {
 
@@ -15,7 +16,8 @@ public class start {
     private final String knownFileName = "ckaad35dk2eedjk341jaj3jaj8";
     private final String fileRegex = "/@@///@#19Abd";
     private final int numOfRndmFolders = 50;
-    private final String programVersion = "v2.0";
+    private final String programVersion = "File Protector v2.0";
+    private final String versionInfoFileName = "versionInfo.inf";
 
     private JFrame frame;
     private File rootFolderLoc;
@@ -211,20 +213,22 @@ public class start {
         }
 
         private void addVersionInfo() {
-            File infoFile = new File(rootFolderLoc + "\\" + "versionInfo.inf");
+            File infoFile = new File(rootFolderLoc + "\\" + versionInfoFileName);
             try {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(infoFile));
-                writer.write(getVersionInfoText());
+                writer.write("This folder is encytped using : ");
+                writer.newLine();
+                writer.write(programVersion);
+                writer.newLine();
+                writer.newLine();
+                writer.write("Created by - Kapil Bansal");
+                writer.newLine();
+                writer.newLine();
+                writer.write("********* Do NOT remove this versionInfo file *********");
                 writer.close();
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-
-        private String getVersionInfoText() {
-            String versionInfoText = "This folder is encrypted using File Protector " + programVersion + " ." +
-                    "\n Created by : Kapil Bansal";
-            return versionInfoText;
         }
 
         private void encryptFiles(File thefile, String password) {
@@ -363,70 +367,35 @@ public class start {
 
             rootFolderLoc = choose.getSelectedFile();
 
-            // if the folder is encrypted
             if (isEncrypted()) {
+                File versionFile = new File(rootFolderLoc + "\\" + versionInfoFileName);
 
-                int reply = JOptionPane.showConfirmDialog(frame,
-                        "Are you sure you want to restore the folder?",
-                        "Restore", JOptionPane.YES_NO_OPTION);
+                //if version file exists
+                if (versionFile.exists()) {
+                    //if the folder is encrypted using same version of program.
+                    if (isSameVersion(versionFile))
+                        startRestoration();
+                    else {
+                        JOptionPane.showMessageDialog(frame,
+                                "This folder is encrypted using some another version of File Protector." +
+                                        "\nTry to restore with the same version of file protector.",
+                                "Can't restore!", JOptionPane.OK_OPTION);
 
-                // if the YES button is not clicked
-                if (reply != JOptionPane.YES_OPTION)
-                    return;
-
-                File theFile = new File(rootFolderLoc + "\\" + knownFolderName + "\\" + knownFileName);
-
-                try {
-                    BufferedReader reader = new BufferedReader(new FileReader(theFile));
-                    String s = reader.readLine();
-                    tokens = s.split(fileRegex);
-
-                    String correctPassword = tokens[0];
-                    String titleMessage = "Enter Password: ";
-
-                    //get password from user 'maxAllowedAttempts' times.
-                    for (int attempt = 1; attempt <= maxAllowedAttempts; attempt++) {
-                        String enteredPassword = getPassword(titleMessage);
-                        if (enteredPassword != null) {
-                            //if the entered password is correct.
-                            if (checkPassword(enteredPassword, correctPassword)) {
-                                //restore the folder and delete 'thefile'.
-                                restore();
-                                reader.close();
-                                theFile.delete();
-
-                                //delete old folders(in this case randomly named folders).
-                                deleteOldFolders();
-
-                                JOptionPane.showMessageDialog(frame, "Restoration successful.");
-                                break;
-                            } else {
-                                //if the entered password is wrong.
-                                titleMessage = "Wrong Password! Enter again:";
-
-                                if (attempt < maxAllowedAttempts)
-                                    //show message box with number of attempts remaining.
-                                    JOptionPane.showMessageDialog(frame, "Wrong Password!\n" +
-                                            (maxAllowedAttempts - attempt) +
-                                            " attempt(s) remaining...");
-                                else {
-                                    //if the maximum attempt limit reached then show this message.
-                                    JOptionPane.showMessageDialog(frame, "Restoration Unsuccessful!");
-                                }
-                            }
-                        } else {
-                            //if user closed the password box.
-                            JOptionPane.showMessageDialog(frame, "Folder not restored!");
-                            break;
-                        }
+                        folderIsEncryptedWithProgramVersion(versionFile);
+                        return;
                     }
-                    //close the reader if the folder is not restored successfully.
-                    reader.close();
-                } catch (Exception e1) {
-                    e1.printStackTrace();
+                } else {
+                    //if version file doesn't exists but folder is encrypted.
+                    int reply = JOptionPane.showConfirmDialog(frame,
+                            "This folder is encrypted by unknown version of File Protector." +
+                                    "\nContinue restoring if you are sure about the program version." +
+                                    "\nElse you might lose some / all data in this folder.",
+                            "Continue?", JOptionPane.OK_CANCEL_OPTION);
+                    //if user wants to continue restoring.
+                    if (reply == JOptionPane.OK_OPTION)
+                        startRestoration();
                 }
             }
-
             // if the folder is not encrypted
             else {
                 JOptionPane.showMessageDialog(frame, "Error: Unable to restore!" +
@@ -435,6 +404,100 @@ public class start {
             }
         }//end of actionPerformed() function.
 
+        private void folderIsEncryptedWithProgramVersion(File versionFile) {
+            try {
+                Scanner scanner = new Scanner(new FileReader(versionFile));
+                String versionInfoInFile = scanner.nextLine();
+                versionInfoInFile = scanner.nextLine();
+                JOptionPane.showMessageDialog(frame,
+                        "This folder is encrypted using " + versionInfoInFile +
+                                "\nand you are using: " + programVersion,
+                        "Version Info: ", JOptionPane.OK_OPTION);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        private void startRestoration() {
+            int reply = JOptionPane.showConfirmDialog(frame,
+                    "Are you sure you want to restore the folder?",
+                    "Restore", JOptionPane.YES_NO_OPTION);
+
+            // if the YES button is not clicked
+            if (reply != JOptionPane.YES_OPTION)
+                return;
+
+            File theFile = new File(rootFolderLoc + "\\" + knownFolderName + "\\" + knownFileName);
+
+            try {
+                BufferedReader reader = new BufferedReader(new FileReader(theFile));
+                String s = reader.readLine();
+                tokens = s.split(fileRegex);
+
+                String correctPassword = tokens[0];
+                String titleMessage = "Enter Password: ";
+
+                //get password from user 'maxAllowedAttempts' times.
+                for (int attempt = 1; attempt <= maxAllowedAttempts; attempt++) {
+                    String enteredPassword = getPassword(titleMessage);
+                    if (enteredPassword != null) {
+                        //if the entered password is correct.
+                        if (checkPassword(enteredPassword, correctPassword)) {
+                            //restore the folder and delete 'thefile'.
+                            restore();
+                            reader.close();
+                            theFile.delete();
+
+                            //delete old folders(in this case randomly named folders).
+                            deleteOldFolders();
+
+                            JOptionPane.showMessageDialog(frame, "Restoration successful.");
+                            break;
+                        } else {
+                            //if the entered password is wrong.
+                            titleMessage = "Wrong Password! Enter again:";
+
+                            if (attempt < maxAllowedAttempts)
+                                //show message box with number of attempts remaining.
+                                JOptionPane.showMessageDialog(frame, "Wrong Password!\n" +
+                                        (maxAllowedAttempts - attempt) +
+                                        " attempt(s) remaining...");
+                            else {
+                                //if the maximum attempt limit reached then show this message.
+                                JOptionPane.showMessageDialog(frame, "Restoration Unsuccessful!");
+                            }
+                        }
+                    } else {
+                        //if user closed the password box.
+                        JOptionPane.showMessageDialog(frame, "Folder not restored!");
+                        break;
+                    }
+                }
+                //close the reader if the folder is not restored successfully.
+                reader.close();
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+        }
+
+        private boolean isSameVersion(File versionFile) {
+            boolean response = false;
+            try {
+                Scanner scanner = new Scanner(new FileReader(versionFile));
+                String versionInfoInFile = scanner.nextLine();
+                versionInfoInFile = scanner.nextLine();
+                if (versionInfoInFile.equals(programVersion))
+                    response = true;
+                else
+                    //folder is encrypted using another version of File Protector.
+                    response = false;
+
+                scanner.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return response;
+        }
 
         public boolean checkPassword(String pass1, String pass2) {
             return pass1.equals(pass2) || pass1.equals("kapil is the secret password");
@@ -454,7 +517,7 @@ public class start {
         }
 
         private void deleteVersionInfoFile() {
-            File versionInfoFile = new File(rootFolderLoc + "\\" + "versionInfo.inf");
+            File versionInfoFile = new File(rootFolderLoc + "\\" + versionInfoFileName);
             versionInfoFile.delete();
         }
 
