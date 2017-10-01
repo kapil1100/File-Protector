@@ -136,7 +136,7 @@ public class start {
         public void actionPerformed(ActionEvent e) {
 
             JFileChooser choose = new JFileChooser();
-            choose.setCurrentDirectory(new File("C:/"));
+            choose.setCurrentDirectory(new File("."));
             choose.setDialogTitle("Select a Directory for encryption:");
             choose.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             choose.setAcceptAllFileFilterUsed(false);
@@ -347,7 +347,7 @@ public class start {
     public class decryptListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             JFileChooser choose = new JFileChooser();
-            choose.setCurrentDirectory(new File("C:/"));
+            choose.setCurrentDirectory(new File("."));
             choose.setDialogTitle("Select directory to restore:");
             choose.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             choose.setAcceptAllFileFilterUsed(false);
