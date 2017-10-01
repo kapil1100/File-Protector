@@ -142,17 +142,10 @@ public class start {
             //saving location of the folder selected by the user in the variable 'rootFolderLoc'.
             rootFolderLoc = choose.getSelectedFile();
 
-            //storing names of all the files in the rootFolderLoc in 'fileNames'.
-            String[] fileNames = rootFolderLoc.list();
-
-            // check whether the folder is already encrypted or not
-            for (String fileName : fileNames) {
-                //file named 'ckaad35dk2eedjk341jaj3jaj8' must be present in the directory if the folder is encrypted.
-                if (fileName.equals(knownFileName)) {
-                    JOptionPane.showMessageDialog(frame,
-                            "The folder is already encrypted!!");
-                    return;
-                }
+            if (isEncrypted()) {
+                JOptionPane.showMessageDialog(frame,
+                        "The folder is already encrypted!!");
+                return;
             }
 
             //display warning message before encryption
@@ -167,6 +160,8 @@ public class start {
 
             fileLocList = new ArrayList<>();
             oldFolderList = new ArrayList<>();
+
+            String[] fileNames = rootFolderLoc.list();
 
             for (String fileName : fileNames) {
                 File currentFilePath = new File(rootFolderLoc + "\\" + fileName);
@@ -319,6 +314,12 @@ public class start {
 
     }
 
+    private boolean isEncrypted() {
+        File file = new File(rootFolderLoc + "\\" + knownFolderName + "\\" + knownFileName);
+        //return true if the file exists and false if it isn't.
+        return file.exists();
+    }
+
 
     public class decryptListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
@@ -331,20 +332,9 @@ public class start {
 
             rootFolderLoc = choose.getSelectedFile();
 
-            String[] fileNames = rootFolderLoc.list();
-            boolean isEncrypted = false;
-
-            // check whether the folder is encrypted or not
-            for (String fileName : fileNames) {
-                if (fileName.equals(knownFileName)) {
-                    isEncrypted = true;
-                    break;
-                }
-            }
-
             File theFile;
             // if the folder is encrypted
-            if (isEncrypted == true) {
+            if (isEncrypted()) {
 
                 int reply = JOptionPane.showConfirmDialog(frame,
                         "Are you sure you want to restore the folder?",
