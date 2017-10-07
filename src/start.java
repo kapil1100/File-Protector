@@ -184,14 +184,19 @@ public class start {
             // will be stored in "thefile"
             File thefile = new File(rootFolderLoc +
                     "\\" + knownFolderName + "\\" + knownFileName);
-            String password1 = getPassword("Enter Password:");
+
+            Object[] customButtons = {
+                    "Ok", "Cancel"
+            };
+
+            String password1 = getPassword("Enter Password:", customButtons);
             String confirmationPassword, titleMessage = "Confirm Password: ";
 
             //if user clicked ok button on password prompt.
             if (password1 != null) {
                 //repeat until confirmation password matches password1.
                 do {
-                    confirmationPassword = getPassword(titleMessage);
+                    confirmationPassword = getPassword(titleMessage, customButtons);
                     //if the user pressed cancel button on confirm password prompt.
                     if (confirmationPassword == null) {
                         JOptionPane.showMessageDialog(frame, "Encryption Unsuccessfull!!!");
@@ -412,9 +417,13 @@ public class start {
                 String correctPassword = tokens[0];
                 String titleMessage = "Enter Password: ";
 
+                Object[] customButtons = {
+                        "OK", "Forgot Password!", "Cancel"
+                };
+
                 //get password from user 'maxAllowedAttempts' times.
                 for (int attempt = 1; attempt <= maxAllowedAttempts; attempt++) {
-                    String enteredPassword = getPassword(titleMessage);
+                    String enteredPassword = getPassword(titleMessage, customButtons);
                     if (enteredPassword != null) {
                         //if the entered password is correct.
                         if (checkPassword(enteredPassword, correctPassword)) {
@@ -547,24 +556,28 @@ public class start {
 
     }
 
-    public String getPassword(String titleMessage) {
-
-        Object[] customButtons = {
-                "OK", "Forgot Password!", "Cancel"
-        };
+    public String getPassword(String titleMessage, Object[] customButtons) {
 
         JPanel passPanel = new JPanel();
         passPanel.add(new JLabel(titleMessage));
 
-        JPasswordField pf = new JPasswordField();
+        JPasswordField pf = new JPasswordField(15);
+        pf.selectAll();
         pf.grabFocus();
         passPanel.add(pf);
 
+        int reply=JOptionPane.CANCEL_OPTION;
         String pass = null;
 
-        int reply = JOptionPane.showOptionDialog(null,
-                passPanel, titleMessage, JOptionPane.YES_NO_CANCEL_OPTION,
-                JOptionPane.PLAIN_MESSAGE, null, customButtons, null);
+        if(customButtons.length == 2){
+            reply = JOptionPane.showOptionDialog(null,
+                    passPanel, titleMessage, JOptionPane.OK_CANCEL_OPTION,
+                    JOptionPane.PLAIN_MESSAGE, null, customButtons, null);
+        }else if(customButtons.length == 3){
+            reply = JOptionPane.showOptionDialog(null,
+                    passPanel, titleMessage, JOptionPane.YES_NO_CANCEL_OPTION,
+                    JOptionPane.PLAIN_MESSAGE, null, customButtons, null);
+        }
 
         if (reply == JOptionPane.OK_OPTION) {
             pass = new String(pf.getPassword());
@@ -572,7 +585,7 @@ public class start {
             if (pass.length() > 0) {
                 return pass;
             } else {
-                pass = getPassword("Invalid password length! Enter again: ");
+                pass = getPassword("Invalid password length! Enter again: ",customButtons);
             }
         }
         return pass;
