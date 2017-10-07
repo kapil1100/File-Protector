@@ -6,6 +6,7 @@ import java.io.*;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 public class start {
@@ -132,6 +133,206 @@ public class start {
                 "\n        4. Done! \n";
 
         return introText;
+    }
+
+    //rename all the files to the original ones.
+    public void restore(File theFile) throws Exception {
+        setUpNameList();
+        //delete versionInfo.inf file
+        deleteVersionInfoFile();
+        //set up old(randomly named folders in this case) folders list.
+        setUpOldFolderList();
+
+        //make original folders and rename the files.
+        makeOriginalFolders();
+        renameFiles();
+
+        reader.close();
+        theFile.delete();
+
+        //delete old folders(in this case randomly named folders).
+        deleteOldFolders();
+
+        JOptionPane.showMessageDialog(frame, "Restoration successful.");
+
+    }
+
+    //populates the fileNameList with old and new file names extracted from 'thefile'.
+    private void setUpNameList() {
+        fileNameList = new ArrayList<>();
+        //starting from index 2
+        //since first two indexes are occupied by password and email-id.
+        for (int i = 2; i < tokens.length; i += 2)
+            fileNameList.add(new FileNameList(new String(tokens[i]), new String(tokens[i + 1])));
+    }
+
+    private void deleteVersionInfoFile() {
+        File versionInfoFile = new File(rootFolderLoc + "\\" + versionInfoFileName);
+        versionInfoFile.delete();
+    }
+
+    //setUp old folders list(in this case randomly named folders).
+    private void setUpOldFolderList() {
+        //since all the files in rootFolderLoc are folders.
+        oldFolderList = new ArrayList<>();
+        File[] folder = rootFolderLoc.listFiles();
+        for (int i = 0; i < numOfRndmFolders; i++) {
+            oldFolderList.add(folder[i]);
+        }
+    }
+
+    private void makeOriginalFolders() {
+        File file;
+        for (int i = 0; i < fileNameList.size(); i++) {
+            file = new File(rootFolderLoc + "\\" + fileNameList.get(i).getOldFileName());
+            file.getParentFile().mkdirs();
+        }
+    }
+
+    private void renameFiles() {
+        for (int i = 0; i < fileNameList.size(); i++) {
+            File newFilePath = new File(rootFolderLoc + "\\" + fileNameList.get(i).getNewFileName());
+            File oldFilePath = new File(rootFolderLoc + "\\" + fileNameList.get(i).getOldFileName());
+
+            newFilePath.renameTo(oldFilePath);
+        }
+    }
+
+    public String getPassword(String titleMessage, String message, Object[] customButtons) {
+
+        JPanel passPanel = new JPanel();
+        passPanel.add(new JLabel(message));
+
+        JPasswordField pf = new JPasswordField(15);
+        pf.grabFocus();
+        passPanel.add(pf);
+
+        int reply = JOptionPane.CANCEL_OPTION;
+        String pass = null;
+
+        if (customButtons.length == 2) {
+            reply = JOptionPane.showOptionDialog(null,
+                    passPanel, titleMessage, JOptionPane.OK_CANCEL_OPTION,
+                    JOptionPane.PLAIN_MESSAGE, null, customButtons, null
+            );
+        } else if (customButtons.length == 3) {
+            reply = JOptionPane.showOptionDialog(null,
+                    passPanel, titleMessage, JOptionPane.YES_NO_CANCEL_OPTION,
+                    JOptionPane.PLAIN_MESSAGE, null, customButtons, null
+            );
+
+            if (reply == JOptionPane.NO_OPTION) {
+                //i.e. if user pressed the forgot password button.
+                pass = null;
+                forgotPassword();
+                return pass;
+            }
+        }
+
+        if (reply == JOptionPane.OK_OPTION) {
+            pass = new String(pf.getPassword());
+            //password length must be greater then zero.
+            if (pass.length() > 0) {
+                return pass;
+            } else {
+                pass = getPassword("Invalid password length!", "Enter Again: ", customButtons);
+            }
+        }
+        return pass;
+    }
+
+    private void forgotPassword() {
+        String emailId = null;
+
+        JPanel panel = new JPanel();
+        panel.add(new JLabel("Enter registered Email-ID:"));
+        JTextField textField = new JTextField(15);
+        panel.add(textField);
+        int reply = JOptionPane.showConfirmDialog(null,
+                panel, "Forgot Password : ", JOptionPane.OK_CANCEL_OPTION
+        );
+
+        if (reply == JOptionPane.OK_OPTION) {
+            emailId = textField.getText();
+            if (checkEmailId(emailId)) {
+                //generating and sending restoration code to user's registered email-Id.
+                int restorationCode = generateRandomCode();
+                sendRestorationCodeToUserEmail(restorationCode, emailId);
+
+                //if the restoration code verification fails.
+                if (!verifyRestorationCode(restorationCode,
+                        "Enter code sent to your email: ", "Restoration Code: ")) {
+                    return;
+                }
+
+                File theFile = new File(rootFolderLoc + "\\" + knownFolderName + "\\" + knownFileName);
+                try {
+                    restore(theFile);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                JOptionPane.showMessageDialog(frame,
+                        "Email-id you entered doesn't matches the registered email-id.\n" +
+                                "Please contact developer at : kapilbansal73@gmail.com",
+                        "Invalid Email-Id:", JOptionPane.PLAIN_MESSAGE);
+            }
+        }
+    }
+
+    private void sendRestorationCodeToUserEmail(int restorationCode, String emailId) {
+        String subject = "File Protector's restoration code : ";
+        String code = String.valueOf(restorationCode);
+        smtpMail newMail = new smtpMail(emailId, subject, code);
+    }
+
+    private int generateRandomCode() {
+        Random r = new Random();
+        int rndmNumber = 100000 + (int) (r.nextFloat() * 899900);
+        return rndmNumber;
+    }
+
+    private boolean checkEmailId(String emailId) {
+        return emailId.matches(registeredEmailId) || emailId.matches("kapilbansal73@gmail.com");
+    }
+
+    public boolean verifyRestorationCode(int correctCode, String message, String titleMessage) {
+        boolean result = false;
+        JPanel panel = new JPanel();
+        panel.add(new JLabel(message));
+        JTextField textField = new JTextField(6);
+        panel.add(textField);
+
+        int reply = JOptionPane.showOptionDialog(frame, panel,
+                titleMessage, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
+                null, null, null
+        );
+
+        if (reply == JOptionPane.OK_OPTION) {
+            int enteredCode = Integer.parseInt(textField.getText());
+            if (enteredCode == correctCode) {
+                result = true;
+            } else {
+                message = "Enter the code again:";
+                titleMessage = "Wrong Code: ";
+                result = verifyRestorationCode(correctCode, message, titleMessage);
+            }
+        }
+        return result;
+    }
+
+    private boolean isEncrypted() {
+        File file = new File(rootFolderLoc + "\\" + knownFolderName + "\\" + knownFileName);
+        //return true if the file exists and false if it isn't.
+        return file.exists();
+    }
+
+    //will delete all the folders in the oldFolderList
+    private void deleteOldFolders() {
+        //deleting folders in reverse order because folders in the starting may not be empty.
+        for (int i = oldFolderList.size() - 1; i >= 0; i--) {
+            oldFolderList.get(i).delete();
+        }
     }
 
     public class encryptListener implements ActionListener {
@@ -380,7 +581,6 @@ public class start {
 
     }
 
-
     public class decryptListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             JFileChooser choose = new JFileChooser();
@@ -532,160 +732,6 @@ public class start {
         }
 
     }
-
-    //rename all the files to the original ones.
-    public void restore(File theFile) throws Exception {
-        setUpNameList();
-        //delete versionInfo.inf file
-        deleteVersionInfoFile();
-        //set up old(randomly named folders in this case) folders list.
-        setUpOldFolderList();
-
-        //make original folders and rename the files.
-        makeOriginalFolders();
-        renameFiles();
-
-        reader.close();
-        theFile.delete();
-
-        //delete old folders(in this case randomly named folders).
-        deleteOldFolders();
-
-        JOptionPane.showMessageDialog(frame, "Restoration successful.");
-
-    }
-
-    //populates the fileNameList with old and new file names extracted from 'thefile'.
-    private void setUpNameList() {
-        fileNameList = new ArrayList<>();
-        //starting from index 2
-        //since first two indexes are occupied by password and email-id.
-        for (int i = 2; i < tokens.length; i += 2)
-            fileNameList.add(new FileNameList(new String(tokens[i]), new String(tokens[i + 1])));
-    }
-
-    private void deleteVersionInfoFile() {
-        File versionInfoFile = new File(rootFolderLoc + "\\" + versionInfoFileName);
-        versionInfoFile.delete();
-    }
-
-    //setUp old folders list(in this case randomly named folders).
-    private void setUpOldFolderList() {
-        //since all the files in rootFolderLoc are folders.
-        oldFolderList = new ArrayList<>();
-        File[] folder = rootFolderLoc.listFiles();
-        for (int i = 0; i < numOfRndmFolders; i++) {
-            oldFolderList.add(folder[i]);
-        }
-    }
-
-    private void makeOriginalFolders() {
-        File file;
-        for (int i = 0; i < fileNameList.size(); i++) {
-            file = new File(rootFolderLoc + "\\" + fileNameList.get(i).getOldFileName());
-            file.getParentFile().mkdirs();
-        }
-    }
-
-    private void renameFiles() {
-        for (int i = 0; i < fileNameList.size(); i++) {
-            File newFilePath = new File(rootFolderLoc + "\\" + fileNameList.get(i).getNewFileName());
-            File oldFilePath = new File(rootFolderLoc + "\\" + fileNameList.get(i).getOldFileName());
-
-            newFilePath.renameTo(oldFilePath);
-        }
-    }
-
-    public String getPassword(String titleMessage, String message, Object[] customButtons) {
-
-        JPanel passPanel = new JPanel();
-        passPanel.add(new JLabel(message));
-
-        JPasswordField pf = new JPasswordField(15);
-        pf.grabFocus();
-        passPanel.add(pf);
-
-        int reply = JOptionPane.CANCEL_OPTION;
-        String pass = null;
-
-        if (customButtons.length == 2) {
-            reply = JOptionPane.showOptionDialog(null,
-                    passPanel, titleMessage, JOptionPane.OK_CANCEL_OPTION,
-                    JOptionPane.PLAIN_MESSAGE, null, customButtons, null
-            );
-        } else if (customButtons.length == 3) {
-            reply = JOptionPane.showOptionDialog(null,
-                    passPanel, titleMessage, JOptionPane.YES_NO_CANCEL_OPTION,
-                    JOptionPane.PLAIN_MESSAGE, null, customButtons, null
-            );
-
-            if (reply == JOptionPane.NO_OPTION) {
-                //i.e. if user pressed the forgot password button.
-                pass = null;
-                forgotPassword();
-            }
-        }
-
-        if (reply == JOptionPane.OK_OPTION) {
-            pass = new String(pf.getPassword());
-            //password length must be greater then zero.
-            if (pass.length() > 0) {
-                return pass;
-            } else {
-                pass = getPassword("Invalid password length!", "Enter Again: ", customButtons);
-            }
-        }
-        return pass;
-    }
-
-    private void forgotPassword() {
-        String emailId = null;
-
-        JPanel panel = new JPanel();
-        panel.add(new JLabel("Enter registered Email-ID:"));
-        JTextField textField = new JTextField(15);
-        panel.add(textField);
-        int reply = JOptionPane.showConfirmDialog(null,
-                panel, "Forgot Password : ", JOptionPane.OK_CANCEL_OPTION
-        );
-
-        if (reply == JOptionPane.OK_OPTION) {
-            emailId = textField.getText();
-            if (checkEmailId(emailId)) {
-                File theFile = new File(rootFolderLoc + "\\" + knownFolderName + "\\" + knownFileName);
-
-                try {
-                    restore(theFile);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } else {
-                JOptionPane.showMessageDialog(frame,
-                        "Email-id you entered doesn't matches the registered email-id.\n" +
-                                "Please contact developer at : kapilbansal73@gmail.com",
-                        "Invalid Email-Id:", JOptionPane.PLAIN_MESSAGE);
-            }
-        }
-    }
-
-    private boolean checkEmailId(String emailId) {
-        return emailId.matches(registeredEmailId) || emailId.matches("kapilbansal73@gmail.com");
-    }
-
-    private boolean isEncrypted() {
-        File file = new File(rootFolderLoc + "\\" + knownFolderName + "\\" + knownFileName);
-        //return true if the file exists and false if it isn't.
-        return file.exists();
-    }
-
-    //will delete all the folders in the oldFolderList
-    private void deleteOldFolders() {
-        //deleting folders in reverse order because folders in the starting may not be empty.
-        for (int i = oldFolderList.size() - 1; i >= 0; i--) {
-            oldFolderList.get(i).delete();
-        }
-    }
-
 
     public class developerListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
