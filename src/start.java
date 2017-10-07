@@ -205,7 +205,7 @@ public class start {
                         break;
                     } else if (confirmationPassword.equals(password1)) {
                         //encrypt the files when user confirms the password.
-                        encryptFiles(thefile, password1, getEmailId());
+                        encryptFiles(thefile, password1, getEmailId("Email-Id:"));
                         //add a version info file.
                         addVersionInfo();
                         JOptionPane.showMessageDialog(frame, "Encryption Successfull !!");
@@ -219,19 +219,32 @@ public class start {
             }
         }
 
-        private String getEmailId() {
+        private String getEmailId(String titleMessage) {
+            String emailId = null;
             JPanel panel = new JPanel();
             panel.add(new JLabel("Enter Email-id: "));
             JTextField textField = new JTextField(15);
             panel.add(textField);
-            int reply = JOptionPane.showOptionDialog(frame, panel, "Email-Id: ",
+            int reply = JOptionPane.showOptionDialog(frame, panel, titleMessage,
                     JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
                     null, new Object[]{"Add Email", "Do not add Email"}, null
             );
 
-            if (reply == JOptionPane.OK_OPTION)
-                return textField.getText();
-            return null;
+            if (reply == JOptionPane.OK_OPTION) {
+                String text = textField.getText();
+                if (text.contains("@")) {
+                    String[] tempTokens = text.split("@");
+                    //if last token contains "." then the email-id is valid
+                    if (tempTokens[tempTokens.length - 1].contains(".")) {
+                        emailId = text;
+                    } else {
+                        emailId = getEmailId("Invalid Email-Id !");
+                    }
+                } else {
+                    emailId = getEmailId("Invalid Email-Id !");
+                }
+            }
+            return emailId;
         }
 
         private void encryptFiles(File thefile, String password, String emailId) {
