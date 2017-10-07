@@ -548,12 +548,23 @@ public class start {
     }
 
     public String getPassword(String titleMessage) {
+
+        Object[] customButtons = {
+                "OK", "Forgot Password!", "Cancel"
+        };
+
+        JPanel passPanel = new JPanel();
+        passPanel.add(new JLabel(titleMessage));
+
         JPasswordField pf = new JPasswordField();
         pf.grabFocus();
+        passPanel.add(pf);
+
         String pass = null;
 
-        int reply = JOptionPane.showConfirmDialog(frame, pf, titleMessage, JOptionPane.OK_CANCEL_OPTION,
-                JOptionPane.PLAIN_MESSAGE);
+        int reply = JOptionPane.showOptionDialog(null,
+                passPanel, titleMessage, JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE, null, customButtons, null);
 
         if (reply == JOptionPane.OK_OPTION) {
             pass = new String(pf.getPassword());
