@@ -101,9 +101,29 @@ public class EncryptListener implements ActionListener {
                     break;
                 } else if (confirmationPassword.equals(password1)) {
                     //encrypt the files when user confirms the password.
-                    encryptFiles(rootFolderLoc, thefile, password1, new EmailManager().getEmailId("Email-Id:"));
-                    //add a version info file.
-                    addVersionInfo(rootFolderLoc);
+
+                    Loader encryptionLoader = new Loader("Encrypting files...");
+
+                    SwingWorker<Void, Void> encryptionWorker = new SwingWorker<Void, Void>() {
+                        @Override
+                        protected Void doInBackground() throws Exception {
+                            encryptFiles(rootFolderLoc, thefile, password1,
+                                    new EmailManager().getEmailId("Email-Id:"));
+                            //add a version info file.
+                            addVersionInfo(rootFolderLoc);
+
+                            return null;
+                        }
+
+                        @Override
+                        protected void done() {
+                            encryptionLoader.hideLoader();
+                        }
+                    };
+
+                    encryptionWorker.execute();
+                    encryptionLoader.showLoader();
+
                     JOptionPane.showMessageDialog(null, "Encryption Successfull !!");
                     break;
                 } else
