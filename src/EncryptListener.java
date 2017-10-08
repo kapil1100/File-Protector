@@ -104,7 +104,7 @@ public class EncryptListener implements ActionListener {
         //save the file (with known file name).
         new FileManager().saveFile(thefile, password, emailId, fileNameList);
         //rename the files from old to new randomly assigned names.
-        new FileManager().renameFiles(rootFolderLoc, fileNameList);
+        new FileManager().encryptFileRenamer(rootFolderLoc, fileNameList);
         //delete the old folders
         new FolderManager().deleteOldFolders(oldFolderList);
     }

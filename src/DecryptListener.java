@@ -140,7 +140,7 @@ public class DecryptListener implements ActionListener {
 
         //make original folders and rename the files.
         new FolderManager().makeOriginalFolders(fileNameList, rootFolderLoc);
-        new FileManager().renameFiles(fileNameList, rootFolderLoc);
+        new FileManager().decryptFileRenamer(rootFolderLoc, fileNameList);
 
         theFile.delete();
 

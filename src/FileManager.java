@@ -23,16 +23,6 @@ public class FileManager {
         versionInfoFile.delete();
     }
 
-
-    public void renameFiles(ArrayList<FileNameList> fileNameList, File rootFolderLoc) {
-        for (int i = 0; i < fileNameList.size(); i++) {
-            File newFilePath = new File(rootFolderLoc + "\\" + fileNameList.get(i).getNewFileName());
-            File oldFilePath = new File(rootFolderLoc + "\\" + fileNameList.get(i).getOldFileName());
-
-            newFilePath.renameTo(oldFilePath);
-        }
-    }
-
     public void saveFile(File thefile, String pass, String emailId, ArrayList<FileNameList> fileNameList) {
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(thefile));
@@ -54,11 +44,22 @@ public class FileManager {
         }
     }
 
-    void renameFiles(File rootFolderLoc, ArrayList<FileNameList> fileNameList) {
+    //renames the files while encrypting .
+    void encryptFileRenamer(File rootFolderLoc, ArrayList<FileNameList> fileNameList) {
         //renaming all old file names to the new file names
         for (int i = 0; i < fileNameList.size(); i++) {
             (new File(rootFolderLoc + "\\" + fileNameList.get(i).getOldFileName())).renameTo(
                     new File(rootFolderLoc + "\\" + fileNameList.get(i).getNewFileName()));
+        }
+    }
+
+    //renames the files to the old names while restoring.
+    void decryptFileRenamer(File rootFolderLoc, ArrayList<FileNameList> fileNameList) {
+        for (int i = 0; i < fileNameList.size(); i++) {
+            File newFilePath = new File(rootFolderLoc + "\\" + fileNameList.get(i).getNewFileName());
+            File oldFilePath = new File(rootFolderLoc + "\\" + fileNameList.get(i).getOldFileName());
+
+            newFilePath.renameTo(oldFilePath);
         }
     }
 }
