@@ -107,8 +107,12 @@ public class EncryptListener implements ActionListener {
                     SwingWorker<Void, Void> encryptionWorker = new SwingWorker<Void, Void>() {
                         @Override
                         protected Void doInBackground() throws Exception {
+                            Object[] customButtons = {"Add Email", "Do not add Email"};
+
                             encryptFiles(rootFolderLoc, thefile, password1,
-                                    new EmailManager().getEmailId("Email-Id:"));
+                                    new EmailManager().getEmailId("Email-Id:",
+                                            "Enter Email-Id: ", customButtons));
+
                             //add a version info file.
                             addVersionInfo(rootFolderLoc);
 

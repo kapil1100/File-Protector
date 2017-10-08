@@ -52,43 +52,40 @@ public class PasswordManager {
     }
 
     public void forgotPassword(File rootFolderLoc, String registeredEmailId, String[] tokens) {
-        String emailId;
+        String emailTitle = "Email-Id:";
+        Object[] customButtons = {"Ok", "Cancel"};
 
-        JPanel panel = new JPanel();
-        panel.add(new JLabel("Enter registered Email-ID:"));
-        JTextField textField = new JTextField(15);
-        panel.add(textField);
-        int reply = JOptionPane.showConfirmDialog(null,
-                panel, "Forgot Password : ", JOptionPane.OK_CANCEL_OPTION
-        );
+        String emailId = new EmailManager().getEmailId(emailTitle,
+                "Enter registered Email-Id: ", customButtons);
 
-        if (reply == JOptionPane.OK_OPTION) {
+        emailTitle = "Email-id didn't matched with registered email-id!";
+        String message = "Enter again: ";
+
+        while (!new EmailManager().checkEmailId(emailId, registeredEmailId)) {
+            emailId = new EmailManager().getEmailId(emailTitle, message, customButtons);
+        }
+
+        if (emailId != null) {
             RestorationCodeManager restorationCodeManager = new RestorationCodeManager();
-            emailId = textField.getText();
-            if (new EmailManager().checkEmailId(emailId, registeredEmailId)) {
-                //generating and sending restoration code to user's registered email-Id.
-                int restorationCode = restorationCodeManager.generateRandomCode();
-                restorationCodeManager.sendRestorationCodeToUserEmail(restorationCode, emailId);
 
-                //if the restoration code verification fails.
-                if (!restorationCodeManager.verifyRestorationCode(Integer.toString(restorationCode),
-                        "Enter code sent to your email: ", "Restoration Code: ")) {
-                    return;
-                }
+            //generating and sending restoration code to user's registered email-Id.
+            int restorationCode = restorationCodeManager.generateRandomCode();
+            restorationCodeManager.sendRestorationCodeToUserEmail(restorationCode, emailId);
 
-                File theFile = new File(rootFolderLoc + "\\" + knownFolderName + "\\" + knownFileName);
-                try {
-                    new DecryptListener().restore(theFile, rootFolderLoc, tokens);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } else {
-                JOptionPane.showMessageDialog(null,
-                        "Email-id you entered doesn't matches the registered email-id.\n" +
-                                "Please contact developer at : kapilbansal73@gmail.com",
-                        "Invalid Email-Id:", JOptionPane.PLAIN_MESSAGE);
+            //if the restoration code verification fails.
+            if (!restorationCodeManager.verifyRestorationCode(Integer.toString(restorationCode),
+                    "Enter code sent to your email: ", "Restoration Code: ")) {
+                return;
+            }
+
+            File theFile = new File(rootFolderLoc + "\\" + knownFolderName + "\\" + knownFileName);
+            try {
+                new DecryptListener().restore(theFile, rootFolderLoc, tokens);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
+
     }
 
     public boolean checkPassword(String pass1, String pass2) {

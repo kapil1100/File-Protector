@@ -1,8 +1,7 @@
 import javax.mail.Message;
-import javax.mail.MessagingException;
+import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
 import javax.mail.Transport;
-import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.swing.*;
@@ -76,13 +75,13 @@ public class SmtpMail {
             transport.close();
 
             System.out.println("Mail sent successfully.");
-        } catch (AddressException ae) {
-            JOptionPane.showMessageDialog(null, "Unable to send email to this email-id.");
-            ae.printStackTrace();
-        } catch (MessagingException me) {
-            me.printStackTrace();
-        } catch (Exception e) {
+        } catch (NoSuchProviderException e) {
+            JOptionPane.showMessageDialog(null, "No such email provider found.",
+                    "Unable to send email!", JOptionPane.PLAIN_MESSAGE);
             e.printStackTrace();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Unable to send email!");
+            ex.printStackTrace();
         }
     }
 }
