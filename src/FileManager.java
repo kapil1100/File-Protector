@@ -1,6 +1,4 @@
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
+import java.io.*;
 import java.util.ArrayList;
 
 public class FileManager {
@@ -42,6 +40,15 @@ public class FileManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    //returns the tokens
+    //i.e. the old and new file names , also password and email.
+    public String[] getTokensFromFile(File theFile) throws Exception {
+        BufferedReader reader = new BufferedReader(new FileReader(theFile));
+        String s = reader.readLine();
+        reader.close();
+        return s.split(fileRegex);
     }
 
     //renames the files while encrypting .
