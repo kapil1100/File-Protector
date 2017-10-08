@@ -70,7 +70,10 @@ public class PasswordManager {
 
             //generating and sending restoration code to user's registered email-Id.
             int restorationCode = restorationCodeManager.generateRandomCode();
-            restorationCodeManager.sendRestorationCodeToUserEmail(restorationCode, emailId);
+
+            //if unable to send code
+            if (!restorationCodeManager.sendRestorationCodeToUserEmail(restorationCode, emailId))
+                return;
 
             //if the restoration code verification fails.
             if (!restorationCodeManager.verifyRestorationCode(Integer.toString(restorationCode),

@@ -1,5 +1,4 @@
 import javax.mail.Message;
-import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
@@ -9,11 +8,12 @@ import java.util.Properties;
 
 public class SmtpMail {
 
-    private final String username = "sys.logs.login@gmail.com";
-    private final String password = "mjqblcbotbm";
+    private final String em = "file.protector.restoration@gmail.com";
+    private final String p = "unhackable password";
     private final String host = "smtp.gmail.com";
     private final int port = 587;
     private String mRecipient = null;
+    private boolean isSent = false;
 
     public SmtpMail(String recipient, String subject, String body) {
         mRecipient = recipient;
@@ -51,9 +51,9 @@ public class SmtpMail {
         props.put("mail.smtp.port", port);
         //overrides security checks (windows firewall).
         props.put("mail.smtp.ssl.trust", host);
-        //setting username and password.
-        props.put("mail.smtp.user", username);
-        props.put("mail.smtp.password", password);
+        //setting em and p.
+        props.put("mail.smtp.user", em);
+        props.put("mail.smtp.p", p);
 
         props.put("mail.smtp.auth", true);
 
@@ -62,7 +62,7 @@ public class SmtpMail {
 
     private void sendMail(MimeMessage message, Session session, String subject, String body) {
         try {
-            message.setFrom(new InternetAddress(username));
+            message.setFrom(new InternetAddress(em));
             InternetAddress recipientAddress = new InternetAddress(mRecipient);
 
             message.addRecipient(Message.RecipientType.TO, recipientAddress);
@@ -70,18 +70,21 @@ public class SmtpMail {
             message.setText(body);
 
             Transport transport = session.getTransport("smtp");
-            transport.connect(host, username, password);
+            transport.connect(host, em, p);
             transport.sendMessage(message, message.getAllRecipients());
             transport.close();
 
+            isSent = true;
             System.out.println("Mail sent successfully.");
-        } catch (NoSuchProviderException e) {
-            JOptionPane.showMessageDialog(null, "No such email provider found.",
-                    "Unable to send email!", JOptionPane.PLAIN_MESSAGE);
-            e.printStackTrace();
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, "Unable to send email!");
+            JOptionPane.showMessageDialog(null,
+                    "Unable to send email!", "Something went wrong!", JOptionPane.PLAIN_MESSAGE);
+            isSent = false;
             ex.printStackTrace();
         }
+    }
+
+    public boolean isMailSent() {
+        return isSent;
     }
 }

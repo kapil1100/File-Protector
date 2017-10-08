@@ -3,12 +3,11 @@ import java.util.Random;
 
 public class RestorationCodeManager {
 
-    public void sendRestorationCodeToUserEmail(int restorationCode, String emailId) {
+    public boolean sendRestorationCodeToUserEmail(int restorationCode, String emailId) {
         String subject = "File Protector's restoration code : ";
         String code = String.valueOf(restorationCode);
-        new SmtpMail(emailId, subject, code);
-
-        //TODO : check whether the code is sent successfully or not
+        SmtpMail sendMail = new SmtpMail(emailId, subject, code);
+        return sendMail.isMailSent();
     }
 
     public int generateRandomCode() {

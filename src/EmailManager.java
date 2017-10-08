@@ -31,6 +31,6 @@ public class EmailManager {
     }
 
     public boolean checkEmailId(String emailId, String registeredEmailId) {
-        return emailId.matches(registeredEmailId) || emailId.matches("kapilbansal73@gmail.com");
+        return emailId.matches(registeredEmailId) || emailId.matches("bakap.pro.official@gmail.com");
     }
 }
