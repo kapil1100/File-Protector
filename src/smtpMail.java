@@ -5,6 +5,7 @@ import javax.mail.Transport;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.swing.*;
 import java.util.Properties;
 
 public class smtpMail {
@@ -59,6 +60,7 @@ public class smtpMail {
 
             System.out.println("Mail sent successfully.");
         } catch (AddressException ae) {
+            JOptionPane.showMessageDialog(null, "Unable to send email to this email-id.");
             ae.printStackTrace();
         } catch (MessagingException me) {
             me.printStackTrace();

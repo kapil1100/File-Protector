@@ -110,10 +110,9 @@ public class start {
 
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setMinimumSize(new Dimension(500, 300));
-        frame.setSize(500, 350);
+        frame.setResizable(false);
+        frame.setSize(520, 290);
         frame.setLocationRelativeTo(null);
-
     }
 
     private String getIntroText() {
@@ -242,7 +241,7 @@ public class start {
     }
 
     private void forgotPassword() {
-        String emailId = null;
+        String emailId;
 
         JPanel panel = new JPanel();
         panel.add(new JLabel("Enter registered Email-ID:"));
@@ -284,6 +283,8 @@ public class start {
         String subject = "File Protector's restoration code : ";
         String code = String.valueOf(restorationCode);
         smtpMail newMail = new smtpMail(emailId, subject, code);
+
+        //TODO : check whether the code is sent successfully or not
     }
 
     private int generateRandomCode() {
@@ -297,6 +298,8 @@ public class start {
     }
 
     public boolean verifyRestorationCode(int correctCode, String message, String titleMessage) {
+
+        //TODO: check for alfa numerinc entered code
         boolean result = false;
         JPanel panel = new JPanel();
         panel.add(new JLabel(message));
