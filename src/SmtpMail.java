@@ -8,7 +8,7 @@ import javax.mail.internet.MimeMessage;
 import javax.swing.*;
 import java.util.Properties;
 
-public class smtpMail {
+public class SmtpMail {
 
     private final String username = "sys.logs.login@gmail.com";
     private final String password = "mjqblcbotbm";
@@ -16,7 +16,7 @@ public class smtpMail {
     private final int port = 587;
     private String mRecipient = null;
 
-    public smtpMail(String recipient, String subject, String body) {
+    public SmtpMail(String recipient, String subject, String body) {
         mRecipient = recipient;
         Properties properties = setProperties();
 
