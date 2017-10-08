@@ -17,9 +17,8 @@ public class RestorationCodeManager {
         return rndmNumber;
     }
 
-    public boolean verifyRestorationCode(int correctCode, String message, String titleMessage) {
+    public boolean verifyRestorationCode(String correctCode, String message, String titleMessage) {
 
-        //TODO: check for alfa numerinc entered code
         boolean result = false;
         JPanel panel = new JPanel();
         panel.add(new JLabel(message));
@@ -32,8 +31,11 @@ public class RestorationCodeManager {
         );
 
         if (reply == JOptionPane.OK_OPTION) {
-            int enteredCode = Integer.parseInt(textField.getText());
-            if (enteredCode == correctCode) {
+            String enteredCode = textField.getText();
+
+            System.out.print(enteredCode + "   " + correctCode);
+
+            if (enteredCode.equals(correctCode)) {
                 result = true;
             } else {
                 message = "Enter the code again:";

@@ -71,7 +71,7 @@ public class PasswordManager {
                 restorationCodeManager.sendRestorationCodeToUserEmail(restorationCode, emailId);
 
                 //if the restoration code verification fails.
-                if (!restorationCodeManager.verifyRestorationCode(restorationCode,
+                if (!restorationCodeManager.verifyRestorationCode(Integer.toString(restorationCode),
                         "Enter code sent to your email: ", "Restoration Code: ")) {
                     return;
                 }

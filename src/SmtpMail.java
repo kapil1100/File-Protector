@@ -23,7 +23,24 @@ public class SmtpMail {
         Session session = Session.getDefaultInstance(properties);
         MimeMessage message = new MimeMessage(session);
 
-        sendMail(message, session, subject, body);
+        Loader sendMailLoader = new Loader("Sending 6-digit code to your email-id...");
+
+        SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                sendMail(message, session, subject, body);
+
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                sendMailLoader.hideLoader();
+            }
+        };
+
+        worker.execute();
+        sendMailLoader.showLoader();
     }
 
     private Properties setProperties() {
