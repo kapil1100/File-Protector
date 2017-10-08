@@ -46,15 +46,33 @@ public class EncryptListener implements ActionListener {
 
         String[] fileNames = rootFolderLoc.list();
 
-        for (String fileName : fileNames) {
-            File currentFilePath = new File(rootFolderLoc + "\\" + fileName);
-            if (currentFilePath.isDirectory()) {
-                // if the currentFilePath rootFolderLoc is a folder then process it further
-                // to change all the files inside the inner folders.
-                processIt(currentFilePath, "");
-            } else
-                changeIt(currentFilePath, "");
-        }
+        Loader loader = new Loader("Reading files...");
+
+        SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+
+                for (String fileName : fileNames) {
+                    File currentFilePath = new File(rootFolderLoc + "\\" + fileName);
+                    if (currentFilePath.isDirectory()) {
+                        // if the currentFilePath rootFolderLoc is a folder then process it further
+                        // to change all the files inside the inner folders.
+                        processIt(currentFilePath, "");
+                    } else
+                        changeIt(currentFilePath, "");
+                }
+
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                loader.hideLoader();
+            }
+        };
+
+        worker.execute();
+        loader.showLoader();
 
         // the old locations and the new locations
         // will be stored in "thefile"
