@@ -103,8 +103,8 @@ public class Start {
                 "\nI. ENCRYPTION : Use encrypt button to secure all the files in a folder." +
                 "\n        1. Click on encrpt button." +
                 "\n        2. Select a folder." +
-                "\n        4. Add password." +
-                "\n        5. Done!" +
+                "\n        3. Add password." +
+                "\n        4. Done!" +
                 "\n" +
                 "\nII. DECRYPTION / RESTORATION : Use deCrypt button to restore the folder." +
                 "\n        1. Click on deCrypt button." +
