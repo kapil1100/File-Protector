@@ -10,10 +10,8 @@ public class DecryptListener implements ActionListener {
 
     //maximum number of times wrong password can be entered.
     private final int maxAllowedAttempts = 3;
-    private final int numOfRndmFolders = 50;
     private final String knownFolderName = "df48eabsls3daj6ajhiaj7hdkls";
     private final String knownFileName = "ckaad35dk2eedjk341jaj3jaj8";
-    private final String fileRegex = "/@@///@#19Abd";
     private final String programVersion = "File Protector v2.1";
     private final String versionInfoFileName = "versionInfo.inf";
 
@@ -99,6 +97,7 @@ public class DecryptListener implements ActionListener {
         }
     }
 
+    //extracts password and email form the tokens from 'thefile'.
     private void extractPasswordAndEmail(String[] tokens, File theFile, File rootFolderLoc) throws Exception {
 
         String correctPassword = tokens[0];
@@ -151,6 +150,7 @@ public class DecryptListener implements ActionListener {
 
         Loader restoringLoader = new Loader("Restoring files...");
 
+        //creating a swing worker.(this will run these commands in background)
         SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() throws Exception {
@@ -173,6 +173,7 @@ public class DecryptListener implements ActionListener {
                 return null;
             }
 
+            //hides/disposes the loader when background tasks are done executing.
             @Override
             protected void done() {
                 restoringLoader.hideLoader();
@@ -185,6 +186,7 @@ public class DecryptListener implements ActionListener {
         JOptionPane.showMessageDialog(null, "Restoration successful.");
     }
 
+    //checks whether the folder is encrypted using the same version of file protector or not.
     private boolean isSameVersion(File versionFile) {
         boolean response = false;
         try {

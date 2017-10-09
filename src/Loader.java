@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 
+//creates a loader that will be displayed while background tasks are processing.
 public class Loader extends JPanel {
 
     final JDialog loading = new JDialog();

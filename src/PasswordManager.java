@@ -83,6 +83,7 @@ public class PasswordManager {
 
             File theFile = new File(rootFolderLoc + "\\" + knownFolderName + "\\" + knownFileName);
             try {
+                //if the email is verified then restore the folder.
                 new DecryptListener().restore(theFile, rootFolderLoc, tokens);
             } catch (Exception e) {
                 e.printStackTrace();

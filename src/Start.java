@@ -2,20 +2,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.File;
-import java.util.ArrayList;
 
 public class Start {
 
     private JFrame frame;
-    private File rootFolderLoc;
-    private ArrayList<FileNameList> fileNameList;
-
     private String introText;
-    private String[] tokens;
-    private String registeredEmailId = null;
-    private BufferedReader reader;
 
 
     public static void main(String a[]) {

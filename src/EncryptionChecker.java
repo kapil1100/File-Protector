@@ -1,5 +1,6 @@
 import java.io.File;
 
+//class that checks whether the folder is encrypted or not.
 public class EncryptionChecker {
 
     private final String knownFolderName = "df48eabsls3daj6ajhiaj7hdkls";

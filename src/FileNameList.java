@@ -1,3 +1,4 @@
+//stores the old and new file names
 public class FileNameList {
 
     private String mOldFileName, mNewFileName;

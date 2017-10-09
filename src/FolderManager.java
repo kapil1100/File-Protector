@@ -7,6 +7,7 @@ public class FolderManager {
     private final String knownFolderName = "df48eabsls3daj6ajhiaj7hdkls";
     private final int numOfRndmFolders = 50;
 
+    //prompts the user to select a folder to encrypt or decrypt.
     public File getSelectedFolder(String dialogTitle) {
         JFileChooser choose = new JFileChooser();
         choose.setCurrentDirectory(new File("."));
@@ -36,6 +37,7 @@ public class FolderManager {
         return oldFolderList;
     }
 
+    //creates the original folders in rootFolderLoc during restoration(with all the inner folders).
     public void makeOriginalFolders(ArrayList<FileNameList> fileNameList, File rootFolderLoc) {
         File file;
         for (int i = 0; i < fileNameList.size(); i++) {

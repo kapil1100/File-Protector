@@ -48,6 +48,7 @@ public class EncryptListener implements ActionListener {
 
         Loader loader = new Loader("Reading files...");
 
+        //creating a swing worker.(this will run these commands in background)
         SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() throws Exception {
@@ -66,6 +67,7 @@ public class EncryptListener implements ActionListener {
             }
 
             @Override
+            //hides/disposes the loader when background tasks are done executing.
             protected void done() {
                 loader.hideLoader();
             }
@@ -104,6 +106,7 @@ public class EncryptListener implements ActionListener {
 
                     Loader encryptionLoader = new Loader("Encrypting files...");
 
+                    //creating a swing worker.(this will run these commands in background)
                     SwingWorker<Void, Void> encryptionWorker = new SwingWorker<Void, Void>() {
                         @Override
                         protected Void doInBackground() throws Exception {
@@ -120,6 +123,7 @@ public class EncryptListener implements ActionListener {
                         }
 
                         @Override
+                        //hides/disposes the loader when background tasks are done executing.
                         protected void done() {
                             encryptionLoader.hideLoader();
                         }
