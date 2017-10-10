@@ -197,7 +197,8 @@ public class DecryptListener implements ActionListener {
             Scanner scanner = new Scanner(new FileReader(versionFile));
             String versionInfoInFile = scanner.nextLine();
             versionInfoInFile = scanner.nextLine();
-            if (versionInfoInFile.equals(programVersion))
+            //if the program base version in same i.e. v2.1 = v2.2
+            if (versionInfoInFile.charAt(16) == programVersion.charAt(16))
                 response = true;
             else
                 //folder is encrypted using another version of File Protector.

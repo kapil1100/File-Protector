@@ -58,7 +58,7 @@ public class PasswordManager {
         String emailId = new EmailManager().getEmailId(emailTitle,
                 "Enter registered Email-Id: ", customButtons);
 
-        emailTitle = "Email-id didn't matched with registered email-id!";
+        emailTitle = "Wrong Email-Id!";
         String message = "Enter again: ";
 
         while (!new EmailManager().checkEmailId(emailId, registeredEmailId)) {
