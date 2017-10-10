@@ -8,7 +8,6 @@ public class Start {
     private JFrame frame;
     private String introText;
 
-
     public static void main(String a[]) {
         new Start().go();
     }
@@ -111,6 +110,7 @@ public class Start {
                 "\n        2. Select the encrypted folder." +
                 "\n             (NOTE: Only encrypted folders can be decrypted.)" +
                 "\n        3. Enter the password to restore." +
+                "\n             (Or use your registered email-id to restore.)" +
                 "\n        4. Done! \n";
 
         return introText;
