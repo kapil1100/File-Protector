@@ -24,6 +24,10 @@ public class EncryptListener implements ActionListener {
         //saving location of the folder selected by the user in the variable 'rootFolderLoc'.
         File rootFolderLoc = new FolderManager().getSelectedFolder("Select a folder to encrypt: ");
 
+        //if the user didn't selected any folder.
+        if (rootFolderLoc == null)
+            return;
+
         //check whether the folder is already encrypted or not.
         if (new EncryptionChecker().isEncrypted(rootFolderLoc)) {
             JOptionPane.showMessageDialog(null,

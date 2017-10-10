@@ -21,6 +21,10 @@ public class DecryptListener implements ActionListener {
 
         File rootFolderLoc = new FolderManager().getSelectedFolder("Select a folder to restore: ");
 
+        //if the user didn't selected any folder.
+        if (rootFolderLoc == null)
+            return;
+
         //if the folder is encrypted then start decryption.
         if (new EncryptionChecker().isEncrypted(rootFolderLoc)) {
             File versionFile = new File(rootFolderLoc + "\\" + versionInfoFileName);
