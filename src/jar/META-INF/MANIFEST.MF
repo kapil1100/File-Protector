@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Class-Path: activation-10.3.jar javax.mail.jar
+Main-Class: Start
+

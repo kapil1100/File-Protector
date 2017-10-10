@@ -2,9 +2,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class DecryptListener implements ActionListener {
 
@@ -12,8 +10,6 @@ public class DecryptListener implements ActionListener {
     private final int maxAllowedAttempts = 3;
     private final String knownFolderName = "df48eabsls3daj6ajhiaj7hdkls";
     private final String knownFileName = "ckaad35dk2eedjk341jaj3jaj8";
-    private final String programVersion = "File Protector v3.2";
-    private final String versionInfoFileName = "versionInfo.inf";
 
     private String registeredEmailId = null;
 
@@ -27,20 +23,19 @@ public class DecryptListener implements ActionListener {
 
         //if the folder is encrypted then start decryption.
         if (new EncryptionChecker().isEncrypted(rootFolderLoc)) {
-            File versionFile = new File(rootFolderLoc + "\\" + versionInfoFileName);
-
+            ProgramVersionManager programVersionManager = new ProgramVersionManager();
             //if version file exists
-            if (versionFile.exists()) {
+            if (programVersionManager.isVersionFilePresent(rootFolderLoc)) {
                 //if the folder is encrypted using same version of program.
-                if (isSameVersion(versionFile)) {
+                if (programVersionManager.isEncryptedWithSameProgramVersion()) {
                     startRestoration(rootFolderLoc);
                 } else {
                     JOptionPane.showMessageDialog(null,
-                            "This folder is encrypted using some another version of File Protector." +
-                                    "\nTry to restore with the same version of file protector.",
+                            "This folder is encrypted using another version of File Protector." +
+                                    "\nTry to restore with that version of file protector.",
                             "Can't restore!", JOptionPane.OK_OPTION);
 
-                    folderIsEncryptedWithProgramVersion(versionFile);
+                    programVersionManager.folderIsEncryptedWithProgramVersion();
                     return;
                 }
             } else {
@@ -190,40 +185,4 @@ public class DecryptListener implements ActionListener {
         JOptionPane.showMessageDialog(null, "Restoration successful.");
     }
 
-    //checks whether the folder is encrypted using the same version of file protector or not.
-    private boolean isSameVersion(File versionFile) {
-        boolean response = false;
-        try {
-            Scanner scanner = new Scanner(new FileReader(versionFile));
-            String versionInfoInFile = scanner.nextLine();
-            versionInfoInFile = scanner.nextLine();
-            //if the program base version in same i.e. v2.1 = v2.2
-            if (versionInfoInFile.charAt(16) == programVersion.charAt(16))
-                response = true;
-            else
-                //folder is encrypted using another version of File Protector.
-                response = false;
-
-            scanner.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return response;
-    }
-
-    //displays the version of file protector with which the folder is encrypted
-    private void folderIsEncryptedWithProgramVersion(File versionFile) {
-        try {
-            Scanner scanner = new Scanner(new FileReader(versionFile));
-            String versionInfoInFile = scanner.nextLine();
-            versionInfoInFile = scanner.nextLine();
-            JOptionPane.showMessageDialog(null,
-                    "This folder is encrypted using " + versionInfoInFile +
-                            "\nand you are using: " + programVersion,
-                    "Version Info: ", JOptionPane.OK_OPTION);
-            scanner.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }

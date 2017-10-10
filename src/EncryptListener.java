@@ -12,8 +12,6 @@ public class EncryptListener implements ActionListener {
 
     private final String knownFolderName = "df48eabsls3daj6ajhiaj7hdkls";
     private final String knownFileName = "ckaad35dk2eedjk341jaj3jaj8";
-    private final String programVersion = "File Protector v3.2";
-    private final String versionInfoFileName = "versionInfo.inf";
     private final int numOfRndmFolders = 50;
 
     private ArrayList<FileNameList> fileNameList;
@@ -121,7 +119,7 @@ public class EncryptListener implements ActionListener {
                                             "Enter Email-Id: ", customButtons));
 
                             //add a version info file.
-                            addVersionInfo(rootFolderLoc);
+                            new ProgramVersionManager().addVersionInfoFile(rootFolderLoc);
 
                             return null;
                         }
@@ -158,27 +156,6 @@ public class EncryptListener implements ActionListener {
         //delete the old folders
         new FolderManager().deleteOldFolders(oldFolderList);
     }
-
-    private void addVersionInfo(File rootFolderLoc) {
-        File infoFile = new File(rootFolderLoc + "\\" + versionInfoFileName);
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(infoFile));
-            writer.write("This folder is encytped using : ");
-            writer.newLine();
-            writer.write(programVersion);
-            writer.newLine();
-            writer.newLine();
-            writer.write("Created by - Kapil Bansal");
-            writer.newLine();
-            writer.newLine();
-            writer.write("********* Do NOT remove this versionInfo file *********");
-            writer.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        infoFile.setReadOnly();
-    }
-
 
     //assign a new file name to the file
     private void changeIt(File oldFilePath, String innerDirectories) {

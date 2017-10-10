@@ -21,7 +21,8 @@ public class Start {
         JMenu fileMenu, aboutMenu, helpMenu;
         JMenuItem creatorItem, restoreItem, exitItem, developerItem, forgotPassword;
 
-        frame = new JFrame("File Protector - by Kapil Bansal");
+        frame = new JFrame(new ProgramVersionManager().getProgramVersion() +
+                " - by Kapil Bansal");
         BorderLayout layout = new BorderLayout();
         frame.setLayout(layout);
 
