@@ -12,7 +12,7 @@ public class DecryptListener implements ActionListener {
     private final int maxAllowedAttempts = 3;
     private final String knownFolderName = "df48eabsls3daj6ajhiaj7hdkls";
     private final String knownFileName = "ckaad35dk2eedjk341jaj3jaj8";
-    private final String programVersion = "File Protector v2.1";
+    private final String programVersion = "File Protector v3.2";
     private final String versionInfoFileName = "versionInfo.inf";
 
     private String registeredEmailId = null;
